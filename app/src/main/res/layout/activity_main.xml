@@ -11,43 +11,21 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/trending_now"
+            app:titleTextColor="@color/white"
+            />
 
-            <com.google.android.material.textfield.TextInputEditText
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="Trending now"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                />
-
-            <!--            <com.google.android.material.textview.MaterialTextView-->
-            <!--                android:id="@+id/tvToolbarTitle"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:gravity="center_vertical"-->
-            <!--                android:text="Title"-->
-            <!--                android:textColor="@android:color/white"-->
-            <!--                android:textSize="30sp"-->
-            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                app:layout_constraintTop_toTopOf="parent"-->
-            <!--                />-->
-
-        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
 
