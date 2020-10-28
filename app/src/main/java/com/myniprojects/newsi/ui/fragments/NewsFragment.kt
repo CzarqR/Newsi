@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentNewsBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class NewsFragment : Fragment(R.layout.fragment_news)
@@ -42,7 +43,7 @@ class NewsFragment : Fragment(R.layout.fragment_news)
         {
             R.id.itemLike ->
             {
-                Log.d("MyTag", "Click like")
+                Timber.d("Click like")
                 true
             }
             else ->

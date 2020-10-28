@@ -1,7 +1,6 @@
 package com.myniprojects.newsi.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -10,6 +9,7 @@ import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentHomeBinding
 import com.myniprojects.newsi.utils.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home)
@@ -50,7 +50,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             {
                 override fun onQueryTextSubmit(p0: String?): Boolean
                 {
-                    Log.d("MyTag", "onQueryTextSubmit")
+                    Timber.d("onQueryTextSubmit")
                     hideKeyboard()
                     return true
                 }
@@ -63,13 +63,24 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             }
         )
 
+        menuItem.setOnActionExpandListener(
+            object : MenuItem.OnActionExpandListener
+            {
+                override fun onMenuItemActionExpand(p0: MenuItem?): Boolean
+                {
+                    Timber.d("onMenuItemActionExpand")
+                    return true;
+                }
 
+                override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean
+                {
+                    Timber.d("onMenuItemActionCollapse")
+                    return true
+                }
+            }
+        )
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean
-    {
-        Log.d("MyTag", "Fragment")
-        return super.onOptionsItemSelected(item)
-    }
-
 }
+
+
+
