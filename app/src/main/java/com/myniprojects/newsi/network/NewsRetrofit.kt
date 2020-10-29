@@ -1,5 +1,7 @@
 package com.myniprojects.newsi.network
 
+import com.myniprojects.newsi.network.data.ApiData
+import com.myniprojects.newsi.network.data.ApiResult
 import com.myniprojects.newsi.utils.Constants.HEADER_HOST
 import com.myniprojects.newsi.utils.Constants.HEADER_KEY
 import retrofit2.Call
@@ -15,5 +17,5 @@ interface NewsRetrofit
         HEADER_KEY
     )
     @GET("trending?language=en")
-    fun getTrending(@Query("number") number: Int): Call<String>
+    suspend fun getTrending(@Query("number") number: Int): ApiResult
 }

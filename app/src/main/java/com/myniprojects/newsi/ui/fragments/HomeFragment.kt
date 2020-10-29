@@ -4,16 +4,21 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentHomeBinding
+import com.myniprojects.newsi.utils.DataState
+import com.myniprojects.newsi.utils.exhaustive
 import com.myniprojects.newsi.utils.hideKeyboard
+import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home)
 {
+    private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: FragmentHomeBinding
 
@@ -27,6 +32,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
@@ -35,6 +41,9 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         binding.butNews.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_newsFragment)
         )
+
+        setupObservers()
+        viewModel.loadTrendingNews()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
@@ -69,7 +78,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 override fun onMenuItemActionExpand(p0: MenuItem?): Boolean
                 {
                     Timber.d("onMenuItemActionExpand")
-                    return true;
+                    return true
                 }
 
                 override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean
@@ -80,7 +89,21 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             }
         )
     }
+
+    private fun setupObservers()
+    {
+        viewModel.dataState.observe(viewLifecycleOwner, {
+            when (it)
+            {
+                is DataState.Success -> Timber.d("Success")
+                is DataState.Error -> Timber.d("Error")
+                is DataState.Loading -> Timber.d("Loading")
+            }.exhaustive
+        })
+    }
 }
+
+
 
 
 

@@ -3,12 +3,13 @@ package com.myniprojects.newsi.di
 import com.myniprojects.newsi.network.NewsRetrofit
 import com.myniprojects.newsi.utils.Constants
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -17,20 +18,16 @@ object RetrofitModule
 {
     @Singleton
     @Provides
-    fun provideRetrofit(scalar: ScalarsConverterFactory): Retrofit = Retrofit.Builder()
-        .addConverterFactory(scalar)
+    fun provideRetrofit(moshi: Moshi): Retrofit = Retrofit.Builder()
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(Constants.BASE_URL)
         .build()
 
     @Singleton
     @Provides
-    fun provideScalar(): ScalarsConverterFactory =
-        ScalarsConverterFactory.create()
+    fun provideMoshi(): Moshi =
+        Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-//    @Singleton
-//    @Provides
-//    fun provideMoshi(): ScalarsConverterFactory =
-//        Moshi.create()
 
     @Singleton
     @Provides
