@@ -6,8 +6,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.myniprojects.newsi.R
+import com.myniprojects.newsi.adapters.NewsClickListener
+import com.myniprojects.newsi.adapters.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentHomeBinding
+import com.myniprojects.newsi.model.News
 import com.myniprojects.newsi.utils.DataState
 import com.myniprojects.newsi.utils.exhaustive
 import com.myniprojects.newsi.utils.hideKeyboard
@@ -19,8 +23,9 @@ import timber.log.Timber
 class HomeFragment : Fragment(R.layout.fragment_home)
 {
     private val viewModel: MainViewModel by viewModels()
-
     private lateinit var binding: FragmentHomeBinding
+
+    lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,12 +43,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
-        binding.butNews.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_newsFragment)
-        )
-
+        initView()
         setupObservers()
-        viewModel.loadTrendingNews()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
@@ -95,12 +96,57 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         viewModel.dataState.observe(viewLifecycleOwner, {
             when (it)
             {
-                is DataState.Success -> Timber.d("Success")
-                is DataState.Error -> Timber.d("Error")
-                is DataState.Loading -> Timber.d("Loading")
+                is DataState.Success ->
+                {
+                    Timber.d("Success")
+                    newsRecyclerAdapter.submitList(it.data)
+                    displayProgressBar(false)
+                }
+                is DataState.Error ->
+                {
+                    Timber.d("Error")
+                    displayProgressBar(false)
+                }
+                is DataState.Loading ->
+                {
+                    Timber.d("Loading")
+                    displayProgressBar(true)
+                }
             }.exhaustive
         })
     }
+
+    private fun initView()
+    {
+        val newsClickListener = NewsClickListener(
+            {
+                openNews(it)
+            },
+            {
+                likeNews(it)
+            }
+        )
+        newsRecyclerAdapter = NewsRecyclerAdapter(newsClickListener)
+        binding.recViewNews.adapter = newsRecyclerAdapter
+    }
+
+    private fun openNews(news: News)
+    {
+        Timber.d("Id opened: ${news.id}")
+        findNavController().navigate(R.id.action_homeFragment_to_newsFragment)
+//        Navigation.createNavigateOnClickListener()
+    }
+
+    private fun likeNews(news: News)
+    {
+        Timber.d("Id liked: ${news.id}")
+    }
+
+    private fun displayProgressBar(isDisplayed: Boolean)
+    {
+        binding.progBar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
+    }
+
 }
 
 

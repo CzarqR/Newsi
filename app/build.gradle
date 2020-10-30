@@ -75,4 +75,8 @@ dependencies {
     // coroutines https://github.com/Kotlin/kotlinx.coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+    // RecyclerView https://developer.android.com/jetpack/androidx/releases/recyclerview
+    implementation "androidx.recyclerview:recyclerview:$recycler_version"
+    implementation "androidx.cardview:cardview:$cardview_version"
 }
