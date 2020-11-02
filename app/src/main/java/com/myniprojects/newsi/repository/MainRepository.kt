@@ -21,7 +21,7 @@ class MainRepository @Inject constructor(
             emit(DataState.Loading)
             try
             {
-                val newsApi = newsRetrofit.getTrending(10)
+                val newsApi = newsRetrofit.getTrending(20)
                 val news = networkMapper.mapFromEntityList(newsApi.data.results)
                 emit(DataState.Success(news))
             }

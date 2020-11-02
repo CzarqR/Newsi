@@ -9,7 +9,7 @@ data class ApiNews(
     val date: String,
     val description: String,
     val id: String,
-    val image: String?,
+    @Json(name = "image") val imageUrl: String?,
     val title: String,
     val url: String
 )

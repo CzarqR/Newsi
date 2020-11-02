@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <data>
@@ -25,36 +26,87 @@
         android:layout_marginBottom="8dp"
         android:elevation="24dp"
         android:onClick="@{()->newsClickListener.openClick(news)}"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="16dp"
+        app:strokeWidth="2dp"
         >
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="4dp"
             >
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/title"
+            <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{news.title}"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/article_image"
+                android:maxHeight="350dp"
+                app:imageUrl="@{news.imageUrl}"
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
                 />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/desc"
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{news.desc}"
-                />
+                android:orientation="vertical"
+                android:padding="16dp"
+                >
 
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{()->newsClickListener.likeClick(news)}"
-                android:text="Like"
-                />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    app:htmlText="@{news.title}"
+                    tools:text="Coronavirus tracked: The US now has more cases per capita than any other country"
+                    />
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="?android:attr/textColorSecondary"
+                    app:htmlText="@{news.desc}"
+                    tools:text="The US once again has the highest number of coronavirus cases as a proportion of its population than any other country in the world after a reco..."
+                    />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <Button
+
+                        style="@style/IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{()->newsClickListener.likeClick(news)}"
+                        app:icon="@drawable/ic_baseline_favorite_border_24"
+                        app:iconTint="@color/favourite_red"
+                        />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="end"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        android:textColor="?android:attr/textColorTertiary"
+                        app:htmlText="@{news.date}"
+                        tools:text="12:37 02 Oct"
+                        />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>

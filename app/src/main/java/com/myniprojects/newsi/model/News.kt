@@ -7,6 +7,7 @@ data class News(
     val desc: String,
     val id: String,
     val image: Bitmap?,
+    val imageUrl: String?,
     val title: String,
     val url: String
 )

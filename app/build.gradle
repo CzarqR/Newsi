@@ -79,4 +79,8 @@ dependencies {
     // RecyclerView https://developer.android.com/jetpack/androidx/releases/recyclerview
     implementation "androidx.recyclerview:recyclerview:$recycler_version"
     implementation "androidx.cardview:cardview:$cardview_version"
+
+    // glide https://github.com/bumptech/glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
 }
