@@ -27,7 +27,7 @@
         android:elevation="24dp"
         android:onClick="@{()->newsClickListener.openClick(news)}"
         app:cardCornerRadius="16dp"
-        app:strokeWidth="2dp"
+        app:strokeWidth="40dp"
         >
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -81,14 +81,14 @@
                     android:layout_height="wrap_content"
                     >
 
-                    <Button
-
+                    <com.google.android.material.button.MaterialButton
                         style="@style/IconButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="@{()->newsClickListener.likeClick(news)}"
                         app:icon="@drawable/ic_baseline_favorite_border_24"
-                        app:iconTint="@color/favourite_red"
+                        app:iconTint="@color/favourite_unselected"
+                        app:likedButton="@{news.isLiked}"
                         />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -99,8 +99,8 @@
                         android:gravity="end"
                         android:textAppearance="?attr/textAppearanceCaption"
                         android:textColor="?android:attr/textColorTertiary"
-                        app:htmlText="@{news.date}"
                         tools:text="12:37 02 Oct"
+                        app:timeFormat="@{news.date}"
                         />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

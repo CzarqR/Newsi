@@ -6,8 +6,11 @@ data class News(
     val date: String,
     val desc: String,
     val id: String,
-    val image: Bitmap?,
     val imageUrl: String?,
     val title: String,
     val url: String
 )
+{
+    val image: Bitmap? = null
+    var isLiked: Boolean = false
+}

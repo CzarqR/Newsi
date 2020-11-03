@@ -7,5 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="favourite_red">#F44336</color>
+
+    //hart icon
+    <color name="favourite_unselected">#C5BDBD</color>
+    <color name="favourite_selected">#F44336</color>
+
+
 </resources>

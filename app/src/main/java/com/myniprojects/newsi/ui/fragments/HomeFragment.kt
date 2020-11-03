@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.NewsClickListener
@@ -22,7 +21,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home)
 {
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
 
     lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
@@ -134,12 +133,13 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     {
         Timber.d("Id opened: ${news.id}")
         findNavController().navigate(R.id.action_homeFragment_to_newsFragment)
-//        Navigation.createNavigateOnClickListener()
+        viewModel.openNews(news)
     }
 
     private fun likeNews(news: News)
     {
         Timber.d("Id liked: ${news.id}")
+        viewModel.likeNews(news.id)
     }
 
     private fun displayProgressBar(isDisplayed: Boolean)

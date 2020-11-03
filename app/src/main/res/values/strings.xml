@@ -2,4 +2,8 @@
     <string name="app_name">Newsi</string>
     <string name="trending_now">Trending now</string>
     <string name="article_image">Article image</string>
+    <string name="liked">Liked</string>
+    <string name="settings">Settings</string>
+    <string name="news">News</string>
+    <string name="like">Like</string>
 </resources>

@@ -13,7 +13,6 @@ class NetworkMapper @Inject constructor() : EntityMapper<ApiNews, News>
             entity.date,
             entity.description,
             entity.id,
-            null,
             entity.imageUrl,
             entity.title,
             entity.url

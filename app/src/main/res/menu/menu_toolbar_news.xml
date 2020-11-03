@@ -6,6 +6,12 @@
     <item
         android:id="@+id/itemLike"
         android:icon="@drawable/ic_baseline_favorite_border_24"
-        android:title="Like"
+        android:title="@string/like"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/itemBrowser"
+        android:icon="@drawable/ic_baseline_open_in_browser_24"
+        android:title="@string/like"
+        app:showAsAction="ifRoom" />
 </menu>

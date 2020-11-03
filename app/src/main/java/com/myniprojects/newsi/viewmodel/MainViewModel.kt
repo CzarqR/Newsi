@@ -19,28 +19,41 @@ class MainViewModel @ViewModelInject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel()
 {
-
     private val _dataState: MutableLiveData<DataState<List<News>>> = MutableLiveData()
     val dataState: LiveData<DataState<List<News>>>
         get() = _dataState
 
+    private val _openedNews: MutableLiveData<News> = MutableLiveData()
+    val openedNews: LiveData<News>
+        get() = _openedNews
+
+    init
+    {
+        loadTrendingNews()
+    }
+
+
     private fun loadTrendingNews()
     {
         viewModelScope.launch {
-
             Timber.d("Current thread ${Thread.currentThread().name}")
 
             mainRepository.getTrendingNews().onEach {
                 Timber.d("Current thread ${Thread.currentThread().name}")
                 _dataState.postValue(it)
             }.launchIn(viewModelScope + Dispatchers.IO)
-
         }
     }
 
-    init
+    fun likeNews(id: String)
     {
-        loadTrendingNews()
+        Timber.d("Like $id")
+    }
+
+    fun openNews(news: News)
+    {
+        Timber.d("Open news $news")
+        _openedNews.value = news
     }
 
 }
