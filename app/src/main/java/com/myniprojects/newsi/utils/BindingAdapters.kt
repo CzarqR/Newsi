@@ -21,12 +21,10 @@ fun ImageView.bindImage(imgUrl: String?)
 {
     if (imgUrl == null)
     {
-        Timber.d("Image url null")
         setImageDrawable(null)
     }
     else
     {
-        Timber.d("Not null url $imgUrl")
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
         Glide.with(context)
             .load(imgUri)
@@ -38,15 +36,19 @@ fun ImageView.bindImage(imgUrl: String?)
 @BindingAdapter("htmlText")
 fun TextView.bindText(text: String?)
 {
-    text?.let {
-        this.text = it.toSpannedHtml()
+    if(text==null)
+    {
+        this.text = ""
+    }
+    else
+    {
+        this.text = text.toSpannedHtml()
     }
 }
 
 @BindingAdapter("likedButton")
 fun MaterialButton.setSelection(isLiked: Boolean?)
 {
-    Timber.d("Liked binding $isLiked")
     if (isLiked != null && isLiked)
     {
         iconTint = ContextCompat.getColorStateList(

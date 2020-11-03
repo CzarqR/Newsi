@@ -139,6 +139,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private fun likeNews(news: News)
     {
         Timber.d("Id liked: ${news.id}")
+
         viewModel.likeNews(news.id)
     }
 
@@ -146,6 +147,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     {
         binding.progBar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
     }
+
+
 
 }
 

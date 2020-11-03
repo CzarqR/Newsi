@@ -1,11 +1,10 @@
 package com.myniprojects.newsi.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -13,6 +12,8 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.ActivityMainBinding
+import com.myniprojects.newsi.utils.Constants
+import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -23,23 +24,37 @@ class MainActivity : AppCompatActivity()
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
-        //Set dark theme
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        //delegate.applyDayNight()
-
         super.onCreate(savedInstanceState)
+        observeSharedPreferences()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupNavigation()
-
-
-
     }
 
+    private fun observeSharedPreferences()
+    {
+        viewModel.liveSharedPreferences
+            .getBoolean(Constants.KEY_DARK_MODE, false)
+            .observe(this, {
+                Timber.d("Dark theme $it")
+//                if (it)
+//                {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//                    delegate.applyDayNight()
+//                }
+//                else
+//                {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//                    delegate.applyDayNight()
+//                }
+            })
+    }
 
     private fun setupNavigation()
     {

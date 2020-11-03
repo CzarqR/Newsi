@@ -17,9 +17,13 @@ object Constants
     const val NETWORK_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     const val LOCAL_DATE_FORMAT = "HH:mm MMM dd"
     @RequiresApi(Build.VERSION_CODES.O)
-    val FORMATTER_NETWORK = DateTimeFormatter.ofPattern(NETWORK_DATE_FORMAT)
+    val FORMATTER_NETWORK: DateTimeFormatter = DateTimeFormatter.ofPattern(NETWORK_DATE_FORMAT)
     @RequiresApi(Build.VERSION_CODES.O)
-    val FORMATTER_LOCAL = DateTimeFormatter.ofPattern(LOCAL_DATE_FORMAT)
+    val FORMATTER_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern(LOCAL_DATE_FORMAT)
+
+    // SharedPreferences
+    const val SHARED_PREFERENCES_NAME = "newsi_data_sh"
+    const val KEY_DARK_MODE =  "KEY_DARK_MODE"
 
 
 

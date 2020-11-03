@@ -13,10 +13,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import me.ibrahimsn.library.LiveSharedPreferences
 import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepository,
+    private val _liveSharedPreferences: LiveSharedPreferences
 ) : ViewModel()
 {
     private val _dataState: MutableLiveData<DataState<List<News>>> = MutableLiveData()
@@ -26,6 +28,9 @@ class MainViewModel @ViewModelInject constructor(
     private val _openedNews: MutableLiveData<News> = MutableLiveData()
     val openedNews: LiveData<News>
         get() = _openedNews
+
+    val liveSharedPreferences: LiveSharedPreferences
+        get() = _liveSharedPreferences
 
     init
     {

@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 
 data class News(
     val date: String,
-    val desc: String,
+    val desc: String?,
     val id: String,
     val imageUrl: String?,
     val title: String,
