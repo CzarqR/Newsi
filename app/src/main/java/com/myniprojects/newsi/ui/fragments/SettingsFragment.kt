@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentSettingsBinding
-import com.myniprojects.newsi.utils.Constants.KEY_DARK_MODE
+import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -29,18 +29,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings)
     {
         with(binding)
         {
-            viewModel.liveSharedPreferences
-                .getBoolean(KEY_DARK_MODE, false)
-                .observe(viewLifecycleOwner, {
-                    Timber.d("Dark theme in settings $it")
+            viewModel.darkMode.observe(viewLifecycleOwner, {
+                switchDarkTheme.isChecked = it
+            })
 
-                    switchDarkTheme.isChecked = it
-                })
 
             switchDarkTheme.setOnCheckedChangeListener { _, isChecked ->
-                Timber.d("Changed to $isChecked")
-                viewModel.liveSharedPreferences.preferences.edit()
-                    .putBoolean(KEY_DARK_MODE, isChecked)
+                viewModel.sharedPreferences.edit()
+                    .putBoolean(DARK_MODE_SH.first, isChecked)
                     .apply()
             }
         }

@@ -8,7 +8,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import me.ibrahimsn.library.LiveSharedPreferences
 import javax.inject.Singleton
 
 @Module
@@ -19,9 +18,4 @@ object SharedPreferencesModule
     @Singleton
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
         context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-
-    @Provides
-    @Singleton
-    fun provideLiveSharedPreferences(sharedPreferences: SharedPreferences) =
-        LiveSharedPreferences(sharedPreferences)
 }

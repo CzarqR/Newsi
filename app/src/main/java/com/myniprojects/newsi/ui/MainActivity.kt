@@ -12,7 +12,6 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.ActivityMainBinding
-import com.myniprojects.newsi.utils.Constants
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -37,23 +36,23 @@ class MainActivity : AppCompatActivity()
         setupNavigation()
     }
 
+
     private fun observeSharedPreferences()
     {
-        viewModel.liveSharedPreferences
-            .getBoolean(Constants.KEY_DARK_MODE, false)
-            .observe(this, {
-                Timber.d("Dark theme $it")
-//                if (it)
-//                {
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-//                    delegate.applyDayNight()
-//                }
-//                else
-//                {
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-//                    delegate.applyDayNight()
-//                }
-            })
+
+        viewModel.darkMode.observe(this, {
+            Timber.d("Observed Theme $it")
+            if (it)
+            {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                delegate.applyDayNight()
+            }
+            else
+            {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                delegate.applyDayNight()
+            }
+        })
     }
 
     private fun setupNavigation()
