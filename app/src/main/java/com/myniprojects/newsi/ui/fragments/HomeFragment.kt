@@ -44,6 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
         initView()
         setupObservers()
+        viewModel.searchText = "Trump"
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
@@ -61,6 +62,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 {
                     Timber.d("onQueryTextSubmit")
                     hideKeyboard()
+                    viewModel.searchText = p0
                     return true
                 }
 
@@ -92,7 +94,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
     private fun setupObservers()
     {
-        viewModel.dataState.observe(viewLifecycleOwner, {
+        viewModel.news.observe(viewLifecycleOwner, {
             when (it)
             {
                 is DataState.Success ->
@@ -147,7 +149,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     {
         binding.progBar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
     }
-
 
 
 }

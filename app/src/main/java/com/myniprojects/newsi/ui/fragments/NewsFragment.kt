@@ -48,7 +48,6 @@ class NewsFragment : Fragment(R.layout.fragment_news)
     private fun setObservers()
     {
         viewModel.openedNews.observe(viewLifecycleOwner, {
-            Timber.d("Observed")
             binding.webView.loadUrl(it.url)
         })
     }

@@ -16,12 +16,35 @@ class MainRepository @Inject constructor(
     private val networkMapper: NetworkMapper
 )
 {
-    suspend fun getTrendingNews(): Flow<DataState<List<News>>> =
+    suspend fun getSearchedNews(
+        textSearch: String,
+        number: Int,
+        offset: Int
+    ): Flow<DataState<List<News>>> =
         flow {
             emit(DataState.Loading)
             try
             {
-                val newsApi = newsRetrofit.getTrending(20)
+                val newsApi = newsRetrofit.getSearched(number, offset, textSearch)
+                val news = networkMapper.mapFromEntityList(newsApi.data.results)
+                emit(DataState.Success(news))
+            }
+            catch (e: Exception)
+            {
+                e.message.logD()
+                emit(DataState.Error(e))
+            }
+        }
+
+    suspend fun getTrendingNews(
+        number: Int,
+        offset: Int
+    ): Flow<DataState<List<News>>> =
+        flow {
+            emit(DataState.Loading)
+            try
+            {
+                val newsApi = newsRetrofit.getTrending(number, offset)
                 val news = networkMapper.mapFromEntityList(newsApi.data.results)
                 emit(DataState.Success(news))
             }

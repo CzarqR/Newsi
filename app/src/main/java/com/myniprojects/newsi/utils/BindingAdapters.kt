@@ -70,6 +70,7 @@ fun MaterialButton.setSelection(isLiked: Boolean?)
 @BindingAdapter("timeFormat")
 fun TextView.setTimeFormat(date: String?)
 {
+    // todo validation, some news have different date format
     if (date != null)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
