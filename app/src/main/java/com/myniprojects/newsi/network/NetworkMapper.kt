@@ -1,26 +1,20 @@
 package com.myniprojects.newsi.network
 
-import com.myniprojects.newsi.model.News
+import com.myniprojects.newsi.database.NewsEntity
 import com.myniprojects.newsi.network.data.ApiNews
-import com.myniprojects.newsi.utils.EntityMapper
+import com.myniprojects.newsi.utils.ModelMapper
 import javax.inject.Inject
 
-class NetworkMapper @Inject constructor() : EntityMapper<ApiNews, News>
+class NetworkToEntityMapper @Inject constructor() : ModelMapper<ApiNews, NewsEntity>
 {
-    override fun mapFromEntity(entity: ApiNews): News
+    override fun mapToNewModel(entity: ApiNews): NewsEntity
     {
-        return News(
-            entity.date,
-            entity.description,
-            entity.id,
-            entity.imageUrl,
+        return NewsEntity(
+            entity.url,
             entity.title,
-            entity.url
+            entity.description,
+            entity.imageUrl,
+            entity.date
         )
-    }
-
-    override fun mapToEntity(domainModel: News): ApiNews
-    {
-        TODO("Not yet implemented")
     }
 }

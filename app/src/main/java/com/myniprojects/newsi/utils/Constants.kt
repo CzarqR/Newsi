@@ -6,8 +6,6 @@ import java.time.format.DateTimeFormatter
 
 object Constants
 {
-
-
     // retrofit
     const val BASE_URL = "https://webit-news-search.p.rapidapi.com/"
     const val HEADER_HOST = "x-rapidapi-host: webit-news-search.p.rapidapi.com"
@@ -29,5 +27,8 @@ object Constants
 
     val DARK_MODE_SH = "KEY_DARK_MODE" to false
 
+
+    // database
+    const val DATABASE_NAME = "newsi.db"
 }
 

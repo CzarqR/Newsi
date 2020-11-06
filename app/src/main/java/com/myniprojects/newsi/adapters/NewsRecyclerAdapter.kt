@@ -6,8 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.myniprojects.newsi.databinding.NewsRecyclerItemBinding
-import com.myniprojects.newsi.model.News
-import javax.inject.Inject
+import com.myniprojects.newsi.domain.News
 
 
 class NewsRecyclerAdapter(
@@ -55,11 +54,11 @@ class NewsRecyclerAdapter(
 }
 
 
-class NewsDiffCallback @Inject constructor() : DiffUtil.ItemCallback<News>()
+class NewsDiffCallback : DiffUtil.ItemCallback<News>()
 {
     override fun areItemsTheSame(oldItem: News, newItem: News): Boolean
     {
-        return oldItem.id == newItem.id
+        return oldItem.url == newItem.url
     }
 
     override fun areContentsTheSame(oldItem: News, newItem: News): Boolean

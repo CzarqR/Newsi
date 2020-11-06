@@ -8,7 +8,7 @@
 
         <variable
             name="news"
-            type="com.myniprojects.newsi.model.News"
+            type="com.myniprojects.newsi.domain.News"
             />
 
         <variable

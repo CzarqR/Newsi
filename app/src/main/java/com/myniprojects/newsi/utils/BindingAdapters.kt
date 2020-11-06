@@ -11,7 +11,6 @@ import com.google.android.material.button.MaterialButton
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.FORMATTER_LOCAL
 import com.myniprojects.newsi.utils.Constants.FORMATTER_NETWORK
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -36,7 +35,7 @@ fun ImageView.bindImage(imgUrl: String?)
 @BindingAdapter("htmlText")
 fun TextView.bindText(text: String?)
 {
-    if(text==null)
+    if (text == null)
     {
         this.text = ""
     }
@@ -75,7 +74,14 @@ fun TextView.setTimeFormat(date: String?)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            this.text = LocalDateTime.parse(date, FORMATTER_NETWORK).format(FORMATTER_LOCAL)
+            try
+            {
+                this.text = LocalDateTime.parse(date, FORMATTER_NETWORK).format(FORMATTER_LOCAL)
+            }
+            catch (_: Exception)
+            {
+                this.text = date // date couldn't be parsed, api provided it in different format
+            }
         }
         else
         {
@@ -83,11 +89,19 @@ fun TextView.setTimeFormat(date: String?)
             val d = SimpleDateFormat(Constants.NETWORK_DATE_FORMAT, Locale.getDefault()).parse(date)
             if (d != null)
             {
-                val formatterLocal = SimpleDateFormat(
-                    Constants.LOCAL_DATE_FORMAT,
-                    Locale.getDefault()
-                )
-                this.text = formatterLocal.format(d)
+                try
+                {
+                    val formatterLocal = SimpleDateFormat(
+                        Constants.LOCAL_DATE_FORMAT,
+                        Locale.getDefault()
+                    )
+                    this.text = formatterLocal.format(d)
+                }
+                catch (_: Exception)
+                {
+                    this.text = date // date couldn't be parsed, api provided it in different format
+                }
+
             }
             else
             {

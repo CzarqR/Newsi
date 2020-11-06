@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentNewsBinding
+import com.myniprojects.newsi.utils.setActivityTitle
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -47,9 +48,10 @@ class NewsFragment : Fragment(R.layout.fragment_news)
 
     private fun setObservers()
     {
-        viewModel.openedNews.observe(viewLifecycleOwner, {
-            binding.webView.loadUrl(it.url)
-        })
+//        viewModel.openedNews.observe(viewLifecycleOwner, {
+//            binding.webView.loadUrl(it.url)
+//            setActivityTitle(it.title)
+//        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
@@ -69,19 +71,19 @@ class NewsFragment : Fragment(R.layout.fragment_news)
             }
             R.id.itemBrowser ->
             {
-                val browserIntent =
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(viewModel.openedNews.value!!.url)
-                    )
-                if (browserIntent.resolveActivity(requireActivity().packageManager) == null)
-                {
-                    Timber.d("Cannot open")
-                }
-                else
-                {
-                    startActivity(browserIntent)
-                }
+//                val browserIntent =
+//                    Intent(
+//                        Intent.ACTION_VIEW,
+//                        Uri.parse(viewModel.openedNews.value!!.url)
+//                    )
+//                if (browserIntent.resolveActivity(requireActivity().packageManager) == null)
+//                {
+//                    Timber.d("Cannot open")
+//                }
+//                else
+//                {
+//                    startActivity(browserIntent)
+//                }
                 true
             }
             else ->

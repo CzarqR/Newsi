@@ -25,6 +25,5 @@
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/newsFragment"
-        android:name="com.myniprojects.newsi.ui.fragments.NewsFragment"
-        android:label="NewsFragment" />
+        android:name="com.myniprojects.newsi.ui.fragments.NewsFragment" />
 </navigation>
