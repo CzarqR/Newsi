@@ -1,6 +1,7 @@
 package com.myniprojects.newsi.ui
 
 import android.app.Application
+import com.myniprojects.newsi.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -10,6 +11,9 @@ class BaseApplication : Application()
     override fun onCreate()
     {
         super.onCreate()
-        Timber.plant(Timber.DebugTree())
+        if (BuildConfig.DEBUG)
+        {
+            Timber.plant(Timber.DebugTree())
+        }
     }
 }

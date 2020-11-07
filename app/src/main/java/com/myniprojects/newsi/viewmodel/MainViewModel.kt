@@ -2,6 +2,8 @@ package com.myniprojects.newsi.viewmodel
 
 import android.content.SharedPreferences
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myniprojects.livesh.liveData
@@ -9,7 +11,12 @@ import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.MainRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.Constants.DEFAULT_LOADING_NUMBER
+import com.myniprojects.newsi.utils.DataState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
@@ -27,11 +34,12 @@ class MainViewModel @ViewModelInject constructor(
 //        get() = _dataStateSearch
 //
 
-//    private val _openedNews: MutableLiveData<News> = MutableLiveData()
-//    val openedNews: LiveData<News>
-//        get() = _openedNews
 
-    val news = mainRepository.news
+    private val _loadedNews: MutableLiveData<DataState<List<News>>> = MutableLiveData()
+    val loadedNews: LiveData<DataState<List<News>>>
+        get() = _loadedNews
+
+//    val news = mainRepository.news
 
 //    val news = MediatorLiveData<DataState<List<News>>>()
 
@@ -81,12 +89,9 @@ class MainViewModel @ViewModelInject constructor(
     private fun loadTrendingNews(number: Int = DEFAULT_LOADING_NUMBER, offset: Int = 0)
     {
         viewModelScope.launch {
-
-            mainRepository.getNews(number, offset)
-
-//            mainRepository.getTrendingNews(number, offset).onEach {
-//                _dataStateTrending.postValue(it)
-//            }.launchIn(viewModelScope + Dispatchers.IO)
+            mainRepository.getTrendingNewsNetwork(number, offset).onEach {
+                _loadedNews.postValue(it)
+            }.launchIn(viewModelScope + Dispatchers.IO)
         }
     }
 
@@ -112,6 +117,16 @@ class MainViewModel @ViewModelInject constructor(
     {
         Timber.d("Open news $news")
 //        _openedNews.value = news
+    }
+
+    fun refresh()
+    {
+        loadTrendingNews()
+    }
+
+    fun loadMore()
+    {
+        loadTrendingNews(offset = DEFAULT_LOADING_NUMBER)
     }
 
 }

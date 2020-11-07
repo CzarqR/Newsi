@@ -10,5 +10,5 @@ data class ApiData(
     val number: String,
     val offset: Int,
     val results: List<ApiNews>,
-    @Json(name = "results_count") val resultsCount: Int
+    @Json(name = "results_count") val resultsCount: Int?
 )

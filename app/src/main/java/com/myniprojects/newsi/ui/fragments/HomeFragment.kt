@@ -6,11 +6,14 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.NewsClickListener
 import com.myniprojects.newsi.adapters.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentHomeBinding
 import com.myniprojects.newsi.domain.News
+import com.myniprojects.newsi.utils.DataState
+import com.myniprojects.newsi.utils.exhaustive
 import com.myniprojects.newsi.utils.hideKeyboard
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,12 +56,14 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_toolbar_home, menu)
 
-        val menuItem = menu.findItem(R.id.itemSearch)
-        val searchView = menuItem.actionView as SearchView
+        // region SearchView setup
+
+        val menuItemSearch = menu.findItem(R.id.itemSearch)
+        val searchView = menuItemSearch.actionView as SearchView
 
         // change searchText if it has been set
         viewModel.searchText?.let {
-            menuItem.expandActionView()
+            menuItemSearch.expandActionView()
             searchView.setQuery(it, false)
             searchView.clearFocus()
         }
@@ -83,7 +88,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             }
         )
 
-        menuItem.setOnActionExpandListener(
+        menuItemSearch.setOnActionExpandListener(
             object : MenuItem.OnActionExpandListener
             {
                 override fun onMenuItemActionExpand(p0: MenuItem?): Boolean
@@ -100,35 +105,60 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 }
             }
         )
+
+        // endregion
+
     }
+
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
+        return when (item.itemId)
+        {
+            R.id.itemRefresh ->
+            {
+                Timber.d("Refresh")
+                viewModel.loadMore()
+                true
+            }
+            else ->
+            {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
 
     private fun setupObservers()
     {
-        viewModel.news.observe(viewLifecycleOwner, {
-            newsRecyclerAdapter.submitList(it)
+        viewModel.loadedNews.observe(viewLifecycleOwner, {
+            when (it)
+            {
+                is DataState.Success ->
+                {
+                    Timber.d("Success")
+                    newsRecyclerAdapter.submitList(it.data)
+                    displayProgressBar(false)
+                }
+                is DataState.Error ->
+                {
+                    Timber.d("Error")
+                    Snackbar.make(binding.root, R.string.couldnt_load_data, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.ok) {
+                            // close snackbar
+                        }
+                        .show()
+                    newsRecyclerAdapter.submitList(it.data)
+                    displayProgressBar(false)
+                }
+                is DataState.Loading ->
+                {
+                    Timber.d("Loading")
+                    displayProgressBar(true)
+                }
+            }.exhaustive
         })
-
-//        viewModel.news.observe(viewLifecycleOwner, {
-//            when (it)
-//            {
-//                is DataState.Success ->
-//                {
-//                    Timber.d("Success")
-//                    newsRecyclerAdapter.submitList(it.data)
-//                    displayProgressBar(false)
-//                }
-//                is DataState.Error ->
-//                {
-//                    Timber.d("Error")
-//                    displayProgressBar(false)
-//                }
-//                is DataState.Loading ->
-//                {
-//                    Timber.d("Loading")
-//                    displayProgressBar(true)
-//                }
-//            }.exhaustive
-//        })
     }
 
     private fun initView()

@@ -7,4 +7,7 @@
     <string name="news">News</string>
     <string name="like">Like</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="couldnt_load_data">We can\'t load news from the server. Check Your internet connection</string>
+    <string name="ok">OK</string>
+    <string name="search">Search</string>
 </resources>

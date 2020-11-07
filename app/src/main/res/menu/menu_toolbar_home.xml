@@ -6,7 +6,14 @@
     <item
         android:id="@+id/itemSearch"
         android:icon="@drawable/ic_baseline_search_24"
-        android:title="Search"
+        android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/itemRefresh"
+        android:icon="@drawable/ic_baseline_refresh_24"
+        android:title="@string/search"
+        app:showAsAction="always" />
+
 </menu>
