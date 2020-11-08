@@ -86,10 +86,10 @@ class MainViewModel @ViewModelInject constructor(
     }
 
 
-    private fun loadTrendingNews(number: Int = DEFAULT_LOADING_NUMBER, offset: Int = 0)
+    fun loadTrendingNews()
     {
         viewModelScope.launch {
-            mainRepository.getTrendingNewsNetwork(number, offset).onEach {
+            mainRepository.getTrendingNewsNetwork().onEach {
                 _loadedNews.postValue(it)
             }.launchIn(viewModelScope + Dispatchers.IO)
         }
@@ -122,11 +122,6 @@ class MainViewModel @ViewModelInject constructor(
     fun refresh()
     {
         loadTrendingNews()
-    }
-
-    fun loadMore()
-    {
-        loadTrendingNews(offset = DEFAULT_LOADING_NUMBER)
     }
 
 }

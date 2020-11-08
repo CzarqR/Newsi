@@ -17,7 +17,7 @@ interface NewsRetrofit
     @GET("trending?language=en")
     suspend fun getTrending(
         @Query("number") number: Int,
-        @Query("offset") offset: Int,
+        @Query("offset") page: Int,
     ): ApiResult
 
     @Headers(

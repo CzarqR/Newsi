@@ -6,6 +6,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.NewsClickListener
@@ -26,6 +28,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private lateinit var binding: FragmentHomeBinding
 
     lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
+
+    private var isLoading = false // loading new news
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,7 +115,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     }
 
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean
     {
         return when (item.itemId)
@@ -119,7 +122,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             R.id.itemRefresh ->
             {
                 Timber.d("Refresh")
-                viewModel.loadMore()
+                viewModel.refresh()
                 true
             }
             else ->
@@ -138,8 +141,10 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 is DataState.Success ->
                 {
                     Timber.d("Success")
+                    Timber.d("Size ${it.data.size}")
                     newsRecyclerAdapter.submitList(it.data)
                     displayProgressBar(false)
+                    isLoading = false
                 }
                 is DataState.Error ->
                 {
@@ -151,6 +156,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                         .show()
                     newsRecyclerAdapter.submitList(it.data)
                     displayProgressBar(false)
+                    isLoading = false
                 }
                 is DataState.Loading ->
                 {
@@ -172,7 +178,30 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             }
         )
         newsRecyclerAdapter = NewsRecyclerAdapter(newsClickListener)
+
+
         binding.recViewNews.adapter = newsRecyclerAdapter
+        binding.recViewNews.addOnScrollListener(
+            object : RecyclerView.OnScrollListener()
+            {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
+                {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    Timber.d("${(binding.recViewNews.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()} - ${newsRecyclerAdapter.itemCount - 1}")
+
+                    if (
+                        !isLoading &&
+                        (binding.recViewNews.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == newsRecyclerAdapter.itemCount - 1
+                    )
+                    {
+                        viewModel.loadTrendingNews()
+                        isLoading = true
+                    }
+                }
+            }
+        )
+
     }
 
     private fun openNews(news: News)
