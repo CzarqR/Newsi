@@ -8,12 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
+import androidx.paging.map
 import com.myniprojects.livesh.liveData
+import com.myniprojects.newsi.adapters.NewsRecyclerModel
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.DataState
+import com.myniprojects.newsi.utils.isDateTheSame
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
@@ -22,9 +27,9 @@ class MainViewModel @ViewModelInject constructor(
 ) : ViewModel()
 {
 
-    private var currentSearchResult: Flow<PagingData<News>>? = null
+    private var currentSearchResult: Flow<PagingData<NewsRecyclerModel>>? = null
 
-    fun searchNews(): Flow<PagingData<News>>
+    fun searchNews(): Flow<PagingData<NewsRecyclerModel>>
     {
         val lastResult = currentSearchResult
 
@@ -33,9 +38,38 @@ class MainViewModel @ViewModelInject constructor(
             return lastResult
         }
 
-        val newResult: Flow<PagingData<News>> = newsRepository.getSearchResultStream()
-            .cachedIn(viewModelScope)
+        val newResult: Flow<PagingData<NewsRecyclerModel>> = newsRepository.getSearchResultStream()
+            .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
+            .map {
+                it.insertSeparators { before, after ->
+                    if (after == null)
+                    {
+                        // we're at the end of the list
+                        return@insertSeparators null
+                    }
 
+                    if (before == null)
+                    {
+                        // we're at the beginning of the list
+                        return@insertSeparators null
+                    }
+
+                    // check between 2 items
+                    if (!before.news.date.isDateTheSame(after.news.date)) // different date
+                    {
+                        NewsRecyclerModel.SeparatorItem(after.news.date)
+                    }
+                    else
+                    {
+                        null
+                    }
+                }
+            }
+            .map {
+                it.insertHeaderItem(NewsRecyclerModel.SeparatorItem("2020-10-09 21:10:00")) // todo load first item
+            }
+            .cachedIn(viewModelScope)
+        PagingData
         currentSearchResult = newResult
         return newResult
     }

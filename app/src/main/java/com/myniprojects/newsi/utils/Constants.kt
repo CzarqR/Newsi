@@ -14,13 +14,17 @@ object Constants
 
     // date-time format
     const val NETWORK_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
-    const val LOCAL_DATE_FORMAT = "HH:mm MMM dd"
+    const val LOCAL_DATE_FORMAT = "HH:mm MMM d"
+    private const val SEPARATOR_FORMAT = "dd MMM"
 
     @RequiresApi(Build.VERSION_CODES.O)
     val FORMATTER_NETWORK: DateTimeFormatter = DateTimeFormatter.ofPattern(NETWORK_DATE_FORMAT)
 
     @RequiresApi(Build.VERSION_CODES.O)
     val FORMATTER_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern(LOCAL_DATE_FORMAT)
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    val FORMATTER_SEPARATOR: DateTimeFormatter = DateTimeFormatter.ofPattern(SEPARATOR_FORMAT)
 
     // SharedPreferences
     const val SHARED_PREFERENCES_NAME = "newsi_data_sh"
