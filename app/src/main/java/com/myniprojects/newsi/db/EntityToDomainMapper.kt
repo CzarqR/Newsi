@@ -1,4 +1,4 @@
-package com.myniprojects.newsi.database
+package com.myniprojects.newsi.db
 
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.utils.ModelMapper

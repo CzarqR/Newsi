@@ -1,4 +1,4 @@
-package com.myniprojects.newsi.database
+package com.myniprojects.newsi.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

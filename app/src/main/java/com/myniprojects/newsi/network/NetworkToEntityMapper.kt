@@ -1,6 +1,6 @@
 package com.myniprojects.newsi.network
 
-import com.myniprojects.newsi.database.NewsEntity
+import com.myniprojects.newsi.db.NewsEntity
 import com.myniprojects.newsi.network.data.ApiNews
 import com.myniprojects.newsi.utils.ModelMapper
 import javax.inject.Inject

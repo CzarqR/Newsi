@@ -6,24 +6,40 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.myniprojects.livesh.liveData
 import com.myniprojects.newsi.domain.News
-import com.myniprojects.newsi.repository.MainRepository
+import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
-import com.myniprojects.newsi.utils.Constants.DEFAULT_LOADING_NUMBER
 import com.myniprojects.newsi.utils.DataState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
-    private val mainRepository: MainRepository,
+    private val newsRepository: NewsRepository,
     val sharedPreferences: SharedPreferences
 ) : ViewModel()
 {
+
+    private var currentSearchResult: Flow<PagingData<News>>? = null
+
+    fun searchNews(): Flow<PagingData<News>>
+    {
+        val lastResult = currentSearchResult
+
+        if (lastResult != null)
+        {
+            return lastResult
+        }
+
+        val newResult: Flow<PagingData<News>> = newsRepository.getSearchResultStream()
+            .cachedIn(viewModelScope)
+
+        currentSearchResult = newResult
+        return newResult
+    }
+
 
 //    private val _dataStateTrending: MutableLiveData<DataState<List<News>>> = MutableLiveData()
 //    private val dataStateTrending: LiveData<DataState<List<News>>>
@@ -81,19 +97,19 @@ class MainViewModel @ViewModelInject constructor(
 //        }
 
 
-        loadTrendingNews()
+//        loadTrendingNews()
 //        _dataStateSearch.value = DataState.Loading
     }
 
 
-    fun loadTrendingNews()
-    {
-        viewModelScope.launch {
-            mainRepository.getTrendingNewsNetwork().onEach {
-                _loadedNews.postValue(it)
-            }.launchIn(viewModelScope + Dispatchers.IO)
-        }
-    }
+//    fun loadTrendingNews()
+//    {
+//        viewModelScope.launch {
+//            mainRepository.getTrendingNewsNetwork().onEach {
+//                _loadedNews.postValue(it)
+//            }.launchIn(viewModelScope + Dispatchers.IO)
+//        }
+//    }
 
 //    private fun loadSearchedNews(
 //        searchText: String,
@@ -119,9 +135,9 @@ class MainViewModel @ViewModelInject constructor(
 //        _openedNews.value = news
     }
 
-    fun refresh()
-    {
-        loadTrendingNews()
-    }
+//    fun refresh()
+//    {
+//        loadTrendingNews()
+//    }
 
 }

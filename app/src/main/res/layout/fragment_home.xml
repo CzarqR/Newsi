@@ -14,11 +14,23 @@
         tools:listitem="@layout/news_recycler_item"
         />
 
+
     <ProgressBar
-        android:id="@+id/progBar"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:id="@+id/proBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+
         />
+
+    <Button
+        android:id="@+id/butRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/retry"
+        />
+
 
 </FrameLayout>

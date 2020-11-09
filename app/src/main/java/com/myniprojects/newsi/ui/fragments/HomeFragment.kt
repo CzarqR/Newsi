@@ -3,22 +3,28 @@ package com.myniprojects.newsi.ui.fragments
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.NewsClickListener
+import com.myniprojects.newsi.adapters.NewsLoadStateAdapter
 import com.myniprojects.newsi.adapters.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentHomeBinding
 import com.myniprojects.newsi.domain.News
-import com.myniprojects.newsi.utils.DataState
-import com.myniprojects.newsi.utils.exhaustive
 import com.myniprojects.newsi.utils.hideKeyboard
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -30,6 +36,79 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
 
     private var isLoading = false // loading new news
+
+
+    private var searchJob: Job? = null
+
+    private fun search()
+    {
+        // Make sure we cancel the previous job before creating a new one
+        searchJob?.cancel()
+        searchJob = lifecycleScope.launch {
+            viewModel.searchNews().collectLatest {
+                newsRecyclerAdapter.submitData(it)
+            }
+        }
+    }
+
+    private fun initSearch()
+    {
+        // Scroll to top when the list is refreshed from network.
+        lifecycleScope.launch {
+            newsRecyclerAdapter.loadStateFlow
+                // Only emit when REFRESH LoadState for RemoteMediator changes.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                .collect { binding.recViewNews.scrollToPosition(0) }
+        }
+    }
+
+
+    private fun initAdapter()
+    {
+        val newsClickListener = NewsClickListener(
+            {
+                openNews(it)
+            },
+            {
+                likeNews(it)
+            }
+        )
+        newsRecyclerAdapter = NewsRecyclerAdapter(newsClickListener)
+
+
+
+        binding.recViewNews.adapter = newsRecyclerAdapter.withLoadStateHeaderAndFooter(
+            header = NewsLoadStateAdapter { newsRecyclerAdapter.retry() },
+            footer = NewsLoadStateAdapter { newsRecyclerAdapter.retry() }
+        )
+
+        newsRecyclerAdapter.addLoadStateListener { loadState ->
+
+            Timber.d("New state ${loadState.source.refresh}")
+
+            binding.recViewNews.isVisible = loadState.source.refresh is LoadState.NotLoading
+            binding.proBar.isVisible = loadState.source.refresh is LoadState.Loading
+            binding.butRetry.isVisible = loadState.source.refresh is LoadState.Error
+
+            // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
+            val errorState = loadState.source.append as? LoadState.Error
+                ?: loadState.source.prepend as? LoadState.Error
+                ?: loadState.append as? LoadState.Error
+                ?: loadState.prepend as? LoadState.Error
+            errorState?.let {
+                Snackbar.make(binding.root, R.string.couldnt_load_data, Snackbar.LENGTH_SHORT)
+                    .setAction(R.string.ok) {
+                        // close snackbar
+                    }
+                    .show()
+            }
+        }
+
+
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,9 +129,13 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
-        initView()
-        setupObservers()
+        initAdapter()
+        search()
+        initSearch()
+
+        binding.butRetry.setOnClickListener { newsRecyclerAdapter.retry() }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
     {
@@ -114,7 +197,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean
     {
         return when (item.itemId)
@@ -122,7 +204,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             R.id.itemRefresh ->
             {
                 Timber.d("Refresh")
-                viewModel.refresh()
+//                viewModel.refresh()
                 true
             }
             else ->
@@ -132,76 +214,64 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         }
     }
 
-
     private fun setupObservers()
     {
-        viewModel.loadedNews.observe(viewLifecycleOwner, {
-            when (it)
-            {
-                is DataState.Success ->
-                {
-                    Timber.d("Success")
-                    Timber.d("Size ${it.data.size}")
-                    newsRecyclerAdapter.submitList(it.data)
-                    displayProgressBar(false)
-                    isLoading = false
-                }
-                is DataState.Error ->
-                {
-                    Timber.d("Error")
-                    Snackbar.make(binding.root, R.string.couldnt_load_data, Snackbar.LENGTH_SHORT)
-                        .setAction(R.string.ok) {
-                            // close snackbar
-                        }
-                        .show()
-                    newsRecyclerAdapter.submitList(it.data)
-                    displayProgressBar(false)
-                    isLoading = false
-                }
-                is DataState.Loading ->
-                {
-                    Timber.d("Loading")
-                    displayProgressBar(true)
-                }
-            }.exhaustive
-        })
+
+
+//        viewModel.loadedNews.observe(viewLifecycleOwner, {
+//            when (it)
+//            {
+//                is DataState.Success ->
+//                {
+//                    Timber.d("Success")
+//                    Timber.d("Size ${it.data.size}")
+//                    newsRecyclerAdapter.submitList(it.data)
+//                    displayProgressBar(false)
+//                    isLoading = false
+//                }
+//                is DataState.Error ->
+//                {
+//                    Timber.d("Error")
+//                    Snackbar.make(binding.root, R.string.couldnt_load_data, Snackbar.LENGTH_SHORT)
+//                        .setAction(R.string.ok) {
+//                            // close snackbar
+//                        }
+//                        .show()
+//                    newsRecyclerAdapter.submitList(it.data)
+//                    displayProgressBar(false)
+//                    isLoading = false
+//                }
+//                is DataState.Loading ->
+//                {
+//                    Timber.d("Loading")
+//                    displayProgressBar(true)
+//                }
+//            }.exhaustive
+//        })
     }
 
     private fun initView()
     {
-        val newsClickListener = NewsClickListener(
-            {
-                openNews(it)
-            },
-            {
-                likeNews(it)
-            }
-        )
-        newsRecyclerAdapter = NewsRecyclerAdapter(newsClickListener)
-
-
-        binding.recViewNews.adapter = newsRecyclerAdapter
-        binding.recViewNews.addOnScrollListener(
-            object : RecyclerView.OnScrollListener()
-            {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
-                {
-                    super.onScrolled(recyclerView, dx, dy)
-
-                    Timber.d("${(binding.recViewNews.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()} - ${newsRecyclerAdapter.itemCount - 1}")
-
-                    if (
-                        !isLoading &&
-                        (binding.recViewNews.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == newsRecyclerAdapter.itemCount - 1
-                    )
-                    {
-                        viewModel.loadTrendingNews()
-                        isLoading = true
-                    }
-                }
-            }
-        )
-
+//        binding.recViewNews.addOnScrollListener(
+//            object : RecyclerView.OnScrollListener()
+//            {
+//                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
+//                {
+//                    super.onScrolled(recyclerView, dx, dy)
+//
+//                    Timber.d("${(binding.recViewNews.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()} - ${newsRecyclerAdapter.itemCount - 1}")
+//
+//                    if (
+//                        !isLoading &&
+//                        (binding.recViewNews.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == newsRecyclerAdapter.itemCount - 1
+//                    )
+//                    {
+//                        viewModel.loadTrendingNews()
+//                        isLoading = true
+//                    }
+//                }
+//            }
+//        )
     }
 
     private fun openNews(news: News)
@@ -218,10 +288,10 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 //        viewModel.likeNews(news.id)
     }
 
-    private fun displayProgressBar(isDisplayed: Boolean)
-    {
-        binding.progBar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
-    }
+//    private fun displayProgressBar(isDisplayed: Boolean)
+//    {
+//        //binding.progBar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
+//    }
 }
 
 

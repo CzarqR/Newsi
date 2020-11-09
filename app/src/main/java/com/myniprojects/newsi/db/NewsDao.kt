@@ -1,4 +1,4 @@
-package com.myniprojects.newsi.database
+package com.myniprojects.newsi.db
 
 import androidx.room.Dao
 import androidx.room.Insert

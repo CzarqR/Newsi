@@ -6,5 +6,5 @@ data class News(
     val imageUrl: String?,
     val title: String,
     val url: String,
-    var isLiked: Boolean
+    var isLiked: Boolean = false
 )

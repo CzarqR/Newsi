@@ -2,8 +2,8 @@ package com.myniprojects.newsi.di
 
 import android.content.Context
 import androidx.room.Room
-import com.myniprojects.newsi.database.AppDatabase
-import com.myniprojects.newsi.database.NewsDao
+import com.myniprojects.newsi.db.AppDatabase
+import com.myniprojects.newsi.db.NewsDao
 import com.myniprojects.newsi.utils.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides

@@ -1,60 +1,29 @@
 package com.myniprojects.newsi.adapters
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.myniprojects.newsi.databinding.NewsRecyclerItemBinding
 import com.myniprojects.newsi.domain.News
 
 
 class NewsRecyclerAdapter(
     private val newsClickListener: NewsClickListener
-) : ListAdapter<News, NewsRecyclerAdapter.ViewHolder>(NewsDiffCallback())
+) : PagingDataAdapter<News, NewsViewHolder>(NewsDiffCallback)
 {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder
     {
-        return ViewHolder.from(parent)
+        return NewsViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int)
+    override fun onBindViewHolder(holder: NewsViewHolder, position: Int)
     {
         holder.bind(getItem(position)!!, newsClickListener)
-    }
-
-    class ViewHolder private constructor(
-        private val binding: NewsRecyclerItemBinding
-    ) : RecyclerView.ViewHolder(binding.root)
-    {
-        companion object
-        {
-            fun from(parent: ViewGroup): ViewHolder
-            {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = NewsRecyclerItemBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(
-                    binding
-                )
-            }
-        }
-
-        fun bind(
-            news: News,
-            newsClickListener: NewsClickListener
-        )
-        {
-            binding.news = news
-            binding.newsClickListener = newsClickListener
-            binding.executePendingBindings()
-        }
-
     }
 
 }
 
 
-class NewsDiffCallback : DiffUtil.ItemCallback<News>()
+object NewsDiffCallback : DiffUtil.ItemCallback<News>()
 {
     override fun areItemsTheSame(oldItem: News, newItem: News): Boolean
     {
