@@ -15,7 +15,7 @@ object Constants
     // date-time format
     const val NETWORK_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     const val LOCAL_DATE_FORMAT = "HH:mm MMM d"
-    private const val SEPARATOR_FORMAT = "dd MMM"
+    const val SEPARATOR_FORMAT = "d MMM"
 
     @RequiresApi(Build.VERSION_CODES.O)
     val FORMATTER_NETWORK: DateTimeFormatter = DateTimeFormatter.ofPattern(NETWORK_DATE_FORMAT)

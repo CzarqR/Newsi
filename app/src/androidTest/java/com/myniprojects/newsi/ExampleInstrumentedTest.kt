@@ -1,16 +1,22 @@
 package com.myniprojects.newsi
 
 import android.content.Context
-import androidx.test.platform.app.InstrumentationRegistry
+import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import com.myniprojects.newsi.utils.Constants.FORMATTER_NETWORK
+import com.myniprojects.newsi.utils.Constants.FORMATTER_SEPARATOR
+import com.myniprojects.newsi.utils.Constants.NETWORK_DATE_FORMAT
+import com.myniprojects.newsi.utils.Constants.SEPARATOR_FORMAT
 import com.myniprojects.newsi.utils.getDateFormatted
 import com.myniprojects.newsi.utils.isDateTheSame
-
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
-import org.junit.Before
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -21,11 +27,12 @@ import org.junit.Before
 class ExampleInstrumentedTest
 {
 
-    lateinit var instrumentationContext: Context
+    lateinit var context: Context
 
     @Before
-    fun setup() {
-        instrumentationContext = InstrumentationRegistry.getInstrumentation().context
+    fun setup()
+    {
+        context = getInstrumentation().targetContext.applicationContext
     }
 
 
@@ -33,7 +40,7 @@ class ExampleInstrumentedTest
     fun useAppContext()
     {
         // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext = getInstrumentation().targetContext
         assertEquals("com.myniprojects.newsi", appContext.packageName)
     }
 
@@ -50,7 +57,42 @@ class ExampleInstrumentedTest
     @Test
     fun datePrinter()
     {
-        val d1 = "2020-11-09 13:41:38"
-        assert(d1.getDateFormatted(instrumentationContext) == "Today")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            val d = java.time.LocalDateTime.now()
+            val s = d.format(FORMATTER_NETWORK)
+            assert(s.getDateFormatted(context) == context.getString(R.string.today))
+
+            val d2 = java.time.LocalDateTime.now().minusDays(1)
+            val s2 = d2.format(FORMATTER_NETWORK)
+            assert(s2.getDateFormatted(context) == context.getString(R.string.yesterday))
+
+            val d3 = java.time.LocalDateTime.now().minusDays(2)
+            val s3 = d3.format(FORMATTER_NETWORK)
+            assert(s3.getDateFormatted(context) == d3.format(FORMATTER_SEPARATOR))
+        }
+        else
+        {
+            val sdf = SimpleDateFormat(NETWORK_DATE_FORMAT, Locale.getDefault())
+            val today = Date()
+
+
+            assert(sdf.format(today).getDateFormatted(context) == context.getString(R.string.today))
+
+            today.time -= 1000 * 60 * 60 * 24
+
+            assert(
+                sdf.format(today)
+                    .getDateFormatted(context) == context.getString(R.string.yesterday)
+            )
+
+            today.time -= 1000 * 60 * 60 * 24
+
+            val sdfS = SimpleDateFormat(SEPARATOR_FORMAT, Locale.getDefault())
+
+
+            assert(sdf.format(today).getDateFormatted(context) == sdfS.format(today))
+        }
+
     }
 }

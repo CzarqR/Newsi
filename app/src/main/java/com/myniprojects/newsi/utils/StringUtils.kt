@@ -8,12 +8,9 @@ import androidx.core.text.HtmlCompat
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.FORMATTER_SEPARATOR
 import java.text.SimpleDateFormat
-import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
-import javax.inject.Singleton
 
 fun String.toSpannedHtml(): Spanned
 {
@@ -92,7 +89,6 @@ fun String.getDateFormatted(context: Context): String
 {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
     {
-
         val d = LocalDateTime.parse(
             this,
             Constants.FORMATTER_NETWORK
@@ -115,8 +111,6 @@ fun String.getDateFormatted(context: Context): String
                 return d.format(FORMATTER_SEPARATOR)
             }
         }
-
-
     }
     else
     {
@@ -133,25 +127,29 @@ fun String.getDateFormatted(context: Context): String
             cd.time = d
             ct.time = t
 
-            return "NO IMPL"
 
-//            val days: Int = Duration.between()
-//
-//            return when (cd.)
-//            {
-//                0L ->
-//                {
-//                    context.getString(R.string.today)
-//                }
-//                1L ->
-//                {
-//                    context.getString(R.string.yesterday)
-//                }
-//                else ->
-//                {
-//                    return d.format(FORMATTER_SEPARATOR)
-//                }
-//            }
+            if (
+                ct.get(Calendar.DAY_OF_YEAR) == cd.get(Calendar.DAY_OF_YEAR) &&
+                ct.get(Calendar.YEAR) == cd.get(Calendar.YEAR)
+            )
+            {
+                return context.getString(R.string.today)
+            }
+
+            ct.add(Calendar.DAY_OF_YEAR, -1)
+
+            if (
+                ct.get(Calendar.DAY_OF_YEAR) == cd.get(Calendar.DAY_OF_YEAR) &&
+                ct.get(Calendar.YEAR) == cd.get(Calendar.YEAR)
+            )
+            {
+                return context.getString(R.string.yesterday)
+            }
+
+            return SimpleDateFormat(
+                Constants.SEPARATOR_FORMAT,
+                Locale.getDefault()
+            ).format(d)
 
         }
         else
