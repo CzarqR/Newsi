@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.FORMATTER_LOCAL
@@ -27,6 +28,10 @@ fun ImageView.bindImage(imgUrl: String?)
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
         Glide.with(context)
             .load(imgUri)
+            .apply(
+                RequestOptions()
+                       .placeholder(R.drawable.loading_anim)
+                       .error(R.drawable.ic_baseline_broken_image_24))
             .into(this)
     }
 

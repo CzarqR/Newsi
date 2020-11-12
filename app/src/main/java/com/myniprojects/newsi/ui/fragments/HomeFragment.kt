@@ -86,11 +86,19 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
         newsRecyclerAdapter.addLoadStateListener { loadState ->
 
-            Timber.d("New state ${loadState.source.refresh}")
-
-            binding.recViewNews.isVisible = loadState.source.refresh is LoadState.NotLoading
-            binding.proBar.isVisible = loadState.source.refresh is LoadState.Loading
-            binding.butRetry.isVisible = loadState.source.refresh is LoadState.Error
+            if (newsRecyclerAdapter.itemCount == 0)
+            {
+                // todo better loading and showing no connection
+                binding.recViewNews.isVisible = loadState.source.refresh is LoadState.NotLoading
+                binding.proBar.isVisible = loadState.source.refresh is LoadState.Loading
+                binding.butRetry.isVisible = loadState.source.refresh is LoadState.Error
+            }
+            else
+            {
+                binding.recViewNews.isVisible = true
+                binding.proBar.isVisible = false
+                binding.butRetry.isVisible = loadState.source.refresh is LoadState.Error
+            }
 
             // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
             val errorState = loadState.source.append as? LoadState.Error

@@ -5,7 +5,8 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [
-        NewsEntity::class
+        NewsEntity::class,
+        RemoteKeys::class
     ],
     version = 1,
     exportSchema = false
@@ -13,4 +14,5 @@ import androidx.room.RoomDatabase
 abstract class AppDatabase : RoomDatabase()
 {
     abstract val newsDao: NewsDao
+    abstract val remoteKeysDao: RemoteKeysDao
 }

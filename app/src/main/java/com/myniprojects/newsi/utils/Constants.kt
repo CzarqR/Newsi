@@ -10,7 +10,8 @@ object Constants
     const val BASE_URL = "https://webit-news-search.p.rapidapi.com/"
     const val HEADER_HOST = "x-rapidapi-host: webit-news-search.p.rapidapi.com"
     const val HEADER_KEY = "x-rapidapi-key: 3afd6a0154mshce0ba6c65a48cb8p18fdf5jsn9a31d07e7509"
-    const val DEFAULT_LOADING_NUMBER = 10
+    const val DEFAULT_LOADING_NUMBER = 50
+    const val NEWS_STARTING_PAGE_INDEX = 0
 
     // date-time format
     const val NETWORK_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
@@ -34,5 +35,6 @@ object Constants
 
     // database
     const val DATABASE_NAME = "newsi.db"
+
 }
 

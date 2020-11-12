@@ -4,12 +4,12 @@ import androidx.paging.PagingSource
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.network.NewsRetrofit
 import com.myniprojects.newsi.network.data.NetworkToDomainMapper
+import com.myniprojects.newsi.utils.Constants.NEWS_STARTING_PAGE_INDEX
 import retrofit2.HttpException
 import java.io.IOException
-import javax.inject.Inject
 
-const val NEWS_STARTING_PAGE_INDEX = 0
-
+// old adapter for single source, learning purpose
+@Suppress("unused")
 class NewsPagingSource(
     private val newsRetrofit: NewsRetrofit,
     private val networkToDomainMapper: NetworkToDomainMapper
