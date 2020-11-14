@@ -5,8 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.myniprojects.newsi.db.AppDatabase
 import com.myniprojects.newsi.domain.News
-import com.myniprojects.newsi.network.NewsRetrofit
-import com.myniprojects.newsi.network.data.NetworkToDomainMapper
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,13 +28,17 @@ class NewsRepository @Inject constructor(
 //    }
 
 
-    fun getSearchResultStream(): Flow<PagingData<News>>
+    fun getSearchResultStream(searchKey: String?): Flow<PagingData<News>>
     {
         val pagingSourceFactory = { database.newsDao.getNews() }
 
         return Pager(
-            config = PagingConfig(pageSize = NETWORK_PAGE_SIZE, enablePlaceholders = false, initialLoadSize = 1),
-            remoteMediator = newsRemoteMediator,
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE,
+                enablePlaceholders = false,
+                initialLoadSize = 1
+            ),
+            remoteMediator = newsRemoteMediator.apply { setSearchKey(searchKey) },
             pagingSourceFactory = pagingSourceFactory
         ).flow
     }

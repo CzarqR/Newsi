@@ -8,6 +8,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -18,9 +20,10 @@ object RetrofitModule
 {
     @Singleton
     @Provides
-    fun provideRetrofit(moshi: Moshi): Retrofit = Retrofit.Builder()
+    fun provideRetrofit(moshi: Moshi, okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(Constants.BASE_URL)
+        .client(okHttpClient)
         .build()
 
     @Singleton
@@ -33,4 +36,16 @@ object RetrofitModule
     @Provides
     fun provideBlogService(retrofit: Retrofit): NewsRetrofit =
         retrofit.create(NewsRetrofit::class.java)
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(logger: HttpLoggingInterceptor): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(logger)
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BASIC
+    }
 }

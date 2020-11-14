@@ -48,10 +48,10 @@ class NewsFragment : Fragment(R.layout.fragment_news)
 
     private fun setObservers()
     {
-//        viewModel.openedNews.observe(viewLifecycleOwner, {
-//            binding.webView.loadUrl(it.url)
-//            setActivityTitle(it.title)
-//        })
+        viewModel.openedNews.observe(viewLifecycleOwner, {
+            binding.webView.loadUrl(it.url)
+            setActivityTitle(it.title)
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
@@ -71,19 +71,19 @@ class NewsFragment : Fragment(R.layout.fragment_news)
             }
             R.id.itemBrowser ->
             {
-//                val browserIntent =
-//                    Intent(
-//                        Intent.ACTION_VIEW,
-//                        Uri.parse(viewModel.openedNews.value!!.url)
-//                    )
-//                if (browserIntent.resolveActivity(requireActivity().packageManager) == null)
-//                {
-//                    Timber.d("Cannot open")
-//                }
-//                else
-//                {
-//                    startActivity(browserIntent)
-//                }
+                val browserIntent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(viewModel.openedNews.value!!.url)
+                    )
+                if (browserIntent.resolveActivity(requireActivity().packageManager) == null)
+                {
+                    Timber.d("Cannot open")
+                }
+                else
+                {
+                    startActivity(browserIntent)
+                }
                 true
             }
             else ->

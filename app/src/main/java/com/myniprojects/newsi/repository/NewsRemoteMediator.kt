@@ -25,17 +25,27 @@ class NewsRemoteMediator @Inject constructor(
     private val networkToEntityMapper: NetworkToEntityMapper
 ) : RemoteMediator<Int, News>()
 {
+
+    private var searchKey: String? = null
+
+    fun setSearchKey(key: String?)
+    {
+        searchKey = key
+    }
+
     override suspend fun load(loadType: LoadType, state: PagingState<Int, News>): MediatorResult
     {
         val page: Int = when (loadType)
         {
             LoadType.REFRESH ->
             {
+                Timber.d("REFRESH")
                 val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                 remoteKeys?.nextKey?.minus(1) ?: NEWS_STARTING_PAGE_INDEX
             }
             LoadType.PREPEND ->
             {
+                Timber.d("PREPEND")
                 val remoteKeys = getRemoteKeyForFirstItem(state)
                     ?: throw InvalidObjectException("Remote key and the prevKey should not be null")
                 remoteKeys.prevKey
@@ -44,7 +54,7 @@ class NewsRemoteMediator @Inject constructor(
             }
             LoadType.APPEND ->
             {
-                Timber.d("Append")
+                Timber.d("APPEND")
                 val remoteKeys = getRemoteKeyForLastItem(state)
                 if (remoteKeys?.nextKey == null)
                 {
@@ -56,10 +66,19 @@ class NewsRemoteMediator @Inject constructor(
 
         try
         {
-            val apiResponse = newsRetrofit.getTrending(
-                state.config.pageSize,
-                page * state.config.pageSize
-            )
+            val apiResponse =
+                if (searchKey.isNullOrEmpty())
+                    newsRetrofit.getTrending(
+                        state.config.pageSize,
+                        page * state.config.pageSize
+                    )
+                else
+                    newsRetrofit.getSearched(
+                        state.config.pageSize,
+                        page * state.config.pageSize,
+                        searchKey!!
+                    )
+
 
             val news = apiResponse.data.results
             val endOfPaginationReached = news.isEmpty()
@@ -68,6 +87,7 @@ class NewsRemoteMediator @Inject constructor(
                 // clear all tables in the database
                 if (loadType == LoadType.REFRESH)
                 {
+                    Timber.d("Clear db")
                     database.remoteKeysDao.clearRemoteKeys()
                     database.newsDao.clearNews()
                 }

@@ -15,7 +15,6 @@ import com.myniprojects.newsi.adapters.NewsRecyclerModel
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
-import com.myniprojects.newsi.utils.DataState
 import com.myniprojects.newsi.utils.isDateTheSame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -26,19 +25,29 @@ class MainViewModel @ViewModelInject constructor(
     val sharedPreferences: SharedPreferences
 ) : ViewModel()
 {
+    private val _openedNews = MutableLiveData<News>()
+    val openedNews: LiveData<News>
+        get() = _openedNews
 
     private var currentSearchResult: Flow<PagingData<NewsRecyclerModel>>? = null
 
-    fun searchNews(): Flow<PagingData<NewsRecyclerModel>>
+    private var currentKey: String? = null
+
+    fun searchNews(searchKey: String?): Flow<PagingData<NewsRecyclerModel>>
     {
+        Timber.d("Search news with key:$searchKey")
         val lastResult = currentSearchResult
 
-        if (lastResult != null)
+        if (currentKey == searchKey && lastResult != null)
         {
             return lastResult
         }
 
-        val newResult: Flow<PagingData<NewsRecyclerModel>> = newsRepository.getSearchResultStream()
+        currentKey = searchKey
+
+        val newResult: Flow<PagingData<NewsRecyclerModel>> = newsRepository.getSearchResultStream(
+            searchKey
+        )
             .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
             .map {
                 it.insertSeparators { before, after ->
@@ -85,9 +94,9 @@ class MainViewModel @ViewModelInject constructor(
 //
 
 
-    private val _loadedNews: MutableLiveData<DataState<List<News>>> = MutableLiveData()
-    val loadedNews: LiveData<DataState<List<News>>>
-        get() = _loadedNews
+//    private val _loadedNews: MutableLiveData<DataState<List<News>>> = MutableLiveData()
+//    val loadedNews: LiveData<DataState<List<News>>>
+//        get() = _loadedNews
 
 //    val news = mainRepository.news
 
@@ -166,7 +175,7 @@ class MainViewModel @ViewModelInject constructor(
     fun openNews(news: News)
     {
         Timber.d("Open news $news")
-//        _openedNews.value = news
+        _openedNews.value = news
     }
 
 //    fun refresh()

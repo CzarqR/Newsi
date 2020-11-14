@@ -35,17 +35,23 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
     lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
 
-    private var isLoading = false // loading new news
-
 
     private var searchJob: Job? = null
 
-    private fun search()
+    // passing null will get trending news, giving any not empty string will search news by keyword
+    private fun search(searchKey: String? = null)
     {
         // Make sure we cancel the previous job before creating a new one
         searchJob?.cancel()
+
+
         searchJob = lifecycleScope.launch {
-            viewModel.searchNews().collectLatest {
+            viewModel.searchNews(
+                if (searchKey.isNullOrEmpty())
+                    null
+                else
+                    searchKey
+            ).collectLatest {
                 newsRecyclerAdapter.submitData(it)
             }
         }
@@ -76,8 +82,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             }
         )
         newsRecyclerAdapter = NewsRecyclerAdapter(newsClickListener)
-
-
 
         binding.recViewNews.adapter = newsRecyclerAdapter.withLoadStateHeaderAndFooter(
             header = NewsLoadStateAdapter { newsRecyclerAdapter.retry() },
@@ -167,11 +171,11 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener
             {
-                override fun onQueryTextSubmit(p0: String?): Boolean
+                override fun onQueryTextSubmit(textInput: String?): Boolean
                 {
-                    Timber.d("onQueryTextSubmit")
+                    Timber.d("onQueryTextSubmit $textInput")
                     hideKeyboard()
-                    viewModel.searchText = p0
+                    search(textInput)
                     return true
                 }
 
@@ -195,7 +199,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean
                 {
                     Timber.d("onMenuItemActionCollapse")
-                    viewModel.searchText = null
+                    search()
                     return true
                 }
             }
@@ -212,7 +216,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             R.id.itemRefresh ->
             {
                 Timber.d("Refresh")
-//                viewModel.refresh()
+                newsRecyclerAdapter.refresh()
                 true
             }
             else ->
@@ -258,33 +262,10 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 //        })
     }
 
-    private fun initView()
-    {
-//        binding.recViewNews.addOnScrollListener(
-//            object : RecyclerView.OnScrollListener()
-//            {
-//                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
-//                {
-//                    super.onScrolled(recyclerView, dx, dy)
-//
-//                    Timber.d("${(binding.recViewNews.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()} - ${newsRecyclerAdapter.itemCount - 1}")
-//
-//                    if (
-//                        !isLoading &&
-//                        (binding.recViewNews.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == newsRecyclerAdapter.itemCount - 1
-//                    )
-//                    {
-//                        viewModel.loadTrendingNews()
-//                        isLoading = true
-//                    }
-//                }
-//            }
-//        )
-    }
 
     private fun openNews(news: News)
     {
-//        Timber.d("Id opened: ${news.id}")
+        Timber.d("Id opened: ${news.url}")
         findNavController().navigate(R.id.action_homeFragment_to_newsFragment)
         viewModel.openNews(news)
     }
@@ -295,13 +276,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 //
 //        viewModel.likeNews(news.id)
     }
-
-//    private fun displayProgressBar(isDisplayed: Boolean)
-//    {
-//        //binding.progBar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
-//    }
 }
-
 
 
 
