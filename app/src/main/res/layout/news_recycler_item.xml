@@ -99,8 +99,8 @@
                         android:gravity="end"
                         android:textAppearance="?attr/textAppearanceCaption"
                         android:textColor="?android:attr/textColorTertiary"
-                        tools:text="12:37 02 Oct"
                         app:timeFormat="@{news.date}"
+                        tools:text="12:37 02 Oct"
                         />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

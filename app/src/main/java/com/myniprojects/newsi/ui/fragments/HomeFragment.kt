@@ -33,25 +33,18 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
 
-    lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
+    private lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
 
 
     private var searchJob: Job? = null
 
     // passing null will get trending news, giving any not empty string will search news by keyword
-    private fun search(searchKey: String? = null)
+    private fun search()
     {
         // Make sure we cancel the previous job before creating a new one
         searchJob?.cancel()
-
-
         searchJob = lifecycleScope.launch {
-            viewModel.searchNews(
-                if (searchKey.isNullOrEmpty())
-                    null
-                else
-                    searchKey
-            ).collectLatest {
+            viewModel.searchNews().collectLatest {
                 newsRecyclerAdapter.submitData(it)
             }
         }
@@ -59,6 +52,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
     private fun initSearch()
     {
+        Timber.d("Init search")
+
         // Scroll to top when the list is refreshed from network.
         lifecycleScope.launch {
             newsRecyclerAdapter.loadStateFlow
@@ -66,7 +61,9 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 .distinctUntilChangedBy { it.refresh }
                 // Only react to cases where Remote REFRESH completes i.e., NotLoading.
                 .filter { it.refresh is LoadState.NotLoading }
-                .collect { binding.recViewNews.scrollToPosition(0) }
+                .collect {
+                    binding.recViewNews.scrollToPosition(0)
+                }
         }
     }
 
@@ -117,8 +114,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                     .show()
             }
         }
-
-
     }
 
 
@@ -161,7 +156,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         val searchView = menuItemSearch.actionView as SearchView
 
         // change searchText if it has been set
-        viewModel.searchText?.let {
+        viewModel.currentKey?.let {
             menuItemSearch.expandActionView()
             searchView.setQuery(it, false)
             searchView.clearFocus()
@@ -175,7 +170,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 {
                     Timber.d("onQueryTextSubmit $textInput")
                     hideKeyboard()
-                    search(textInput)
+                    viewModel.submittedKey = textInput
+                    search()
                     return true
                 }
 
@@ -199,6 +195,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean
                 {
                     Timber.d("onMenuItemActionCollapse")
+                    viewModel.submittedKey = null
                     search()
                     return true
                 }
@@ -226,42 +223,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         }
     }
 
-    private fun setupObservers()
-    {
-
-
-//        viewModel.loadedNews.observe(viewLifecycleOwner, {
-//            when (it)
-//            {
-//                is DataState.Success ->
-//                {
-//                    Timber.d("Success")
-//                    Timber.d("Size ${it.data.size}")
-//                    newsRecyclerAdapter.submitList(it.data)
-//                    displayProgressBar(false)
-//                    isLoading = false
-//                }
-//                is DataState.Error ->
-//                {
-//                    Timber.d("Error")
-//                    Snackbar.make(binding.root, R.string.couldnt_load_data, Snackbar.LENGTH_SHORT)
-//                        .setAction(R.string.ok) {
-//                            // close snackbar
-//                        }
-//                        .show()
-//                    newsRecyclerAdapter.submitList(it.data)
-//                    displayProgressBar(false)
-//                    isLoading = false
-//                }
-//                is DataState.Loading ->
-//                {
-//                    Timber.d("Loading")
-//                    displayProgressBar(true)
-//                }
-//            }.exhaustive
-//        })
-    }
-
 
     private fun openNews(news: News)
     {
@@ -273,8 +234,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private fun likeNews(news: News)
     {
         Timber.d("Id liked: ${news.url}")
-//
-//        viewModel.likeNews(news.id)
+        viewModel.likeNews(news)
     }
 }
 

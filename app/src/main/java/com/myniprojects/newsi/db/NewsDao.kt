@@ -18,4 +18,10 @@ interface NewsDao
 
     @Query("DELETE FROM news_entity")
     suspend fun clearNews()
+
+    @Query("DELETE FROM news_entity WHERE isLiked = 'false'")
+    suspend fun clearNewsNotLiked()
+
+    @Query("UPDATE news_entity SET isLiked = :isLiked WHERE url = :url")
+    suspend fun changeLike(isLiked: Boolean, url: String)
 }

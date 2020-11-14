@@ -12,16 +12,20 @@ import androidx.paging.insertSeparators
 import androidx.paging.map
 import com.myniprojects.livesh.liveData
 import com.myniprojects.newsi.adapters.NewsRecyclerModel
+import com.myniprojects.newsi.db.NewsDao
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.isDateTheSame
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
     private val newsRepository: NewsRepository,
+    private val newsDao: NewsDao,
     val sharedPreferences: SharedPreferences
 ) : ViewModel()
 {
@@ -31,22 +35,27 @@ class MainViewModel @ViewModelInject constructor(
 
     private var currentSearchResult: Flow<PagingData<NewsRecyclerModel>>? = null
 
-    private var currentKey: String? = null
 
-    fun searchNews(searchKey: String?): Flow<PagingData<NewsRecyclerModel>>
+    var currentKey: String? = null
+        private set
+
+    var submittedKey: String? = null
+
+
+    fun searchNews(): Flow<PagingData<NewsRecyclerModel>>
     {
-        Timber.d("Search news with key:$searchKey")
+        Timber.d("Search news with key:$submittedKey")
         val lastResult = currentSearchResult
 
-        if (currentKey == searchKey && lastResult != null)
+        if (currentKey == submittedKey && lastResult != null)
         {
             return lastResult
         }
 
-        currentKey = searchKey
+        currentKey = submittedKey
 
         val newResult: Flow<PagingData<NewsRecyclerModel>> = newsRepository.getSearchResultStream(
-            searchKey
+            submittedKey
         )
             .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
             .map {
@@ -83,93 +92,14 @@ class MainViewModel @ViewModelInject constructor(
         return newResult
     }
 
-
-//    private val _dataStateTrending: MutableLiveData<DataState<List<News>>> = MutableLiveData()
-//    private val dataStateTrending: LiveData<DataState<List<News>>>
-//        get() = _dataStateTrending
-//
-//    private val _dataStateSearch: MutableLiveData<DataState<List<News>>> = MutableLiveData()
-//    private val dataStateSearch: LiveData<DataState<List<News>>>
-//        get() = _dataStateSearch
-//
-
-
-//    private val _loadedNews: MutableLiveData<DataState<List<News>>> = MutableLiveData()
-//    val loadedNews: LiveData<DataState<List<News>>>
-//        get() = _loadedNews
-
-//    val news = mainRepository.news
-
-//    val news = MediatorLiveData<DataState<List<News>>>()
-
     val darkMode = sharedPreferences.liveData(DARK_MODE_SH)
 
-    var searchText: String? = null
-        set(value)
-        {
-            field = value
-//            if (value == null)
-//            {
-//                news.value = dataStateTrending.value
-//            }
-//            else
-//            {
-//                loadSearchedNews(value)
-//                news.value = dataStateSearch.value
-//            }
+    fun likeNews(news: News)
+    {
+        Timber.d("Like ${news.url}")
+        viewModelScope.launch(Dispatchers.IO) {
+            newsDao.changeLike(!news.isLiked, news.url)
         }
-
-    init
-    {
-//        news.addSource(dataStateTrending) { result ->
-//            if (searchText == null)
-//            {
-//                result?.let {
-//                    news.value = it
-//                }
-//            }
-//        }
-//
-//        news.addSource(dataStateSearch) { result ->
-//            if (searchText != null)
-//            {
-//                result?.let {
-//                    news.value = it
-//                }
-//            }
-//        }
-
-
-//        loadTrendingNews()
-//        _dataStateSearch.value = DataState.Loading
-    }
-
-
-//    fun loadTrendingNews()
-//    {
-//        viewModelScope.launch {
-//            mainRepository.getTrendingNewsNetwork().onEach {
-//                _loadedNews.postValue(it)
-//            }.launchIn(viewModelScope + Dispatchers.IO)
-//        }
-//    }
-
-//    private fun loadSearchedNews(
-//        searchText: String,
-//        number: Int = DEFAULT_LOADING_NUMBER,
-//        offset: Int = 0
-//    )
-//    {
-//        viewModelScope.launch {
-//            mainRepository.getSearchedNews(searchText, number, offset).onEach {
-//                _dataStateSearch.postValue(it)
-//            }.launchIn(viewModelScope + Dispatchers.IO)
-//        }
-//    }
-
-    fun likeNews(id: String)
-    {
-        Timber.d("Like $id")
     }
 
     fun openNews(news: News)
@@ -177,10 +107,5 @@ class MainViewModel @ViewModelInject constructor(
         Timber.d("Open news $news")
         _openedNews.value = news
     }
-
-//    fun refresh()
-//    {
-//        loadTrendingNews()
-//    }
 
 }
