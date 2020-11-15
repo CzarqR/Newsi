@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         setupNavigation()
     }
 
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity()
                 R.id.newsFragment ->
                 {
                     binding.bottomNavigationView.visibility = View.GONE
+                    binding.appBarLayout.setExpanded(true)
                 }
                 else ->
                 {

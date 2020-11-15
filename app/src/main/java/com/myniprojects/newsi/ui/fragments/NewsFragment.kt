@@ -2,10 +2,13 @@ package com.myniprojects.newsi.ui.fragments
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.myniprojects.newsi.R
@@ -40,8 +43,22 @@ class NewsFragment : Fragment(R.layout.fragment_news)
         binding = FragmentNewsBinding.bind(view)
         with(binding.webView)
         {
-            webViewClient = WebViewClient()
+            webViewClient = object : WebViewClient()
+            {
+                override fun onPageFinished(view: WebView?, url: String?)
+                {
+                    super.onPageFinished(view, url)
+                    if (progress == 100)
+                    {
+                        binding.proBar.isVisible = false
+                        isVisible = true
+                        Timber.d("Finished")
+                    }
+                }
+            }
+
             settings.javaScriptEnabled = true
+
         }
         setObservers()
     }
