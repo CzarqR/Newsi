@@ -25,3 +25,16 @@ interface NewsDao
     @Query("UPDATE news_entity SET isLiked = :isLiked WHERE url = :url")
     suspend fun changeLike(isLiked: Boolean, url: String)
 }
+
+@Dao
+interface DomainNewsDao
+{
+    @Query("SELECT * FROM domain_news ORDER BY date DESC")
+    fun getNews(): PagingSource<Int, News>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(likeNewsEntity: News)
+
+    @Query("DELETE FROM domain_news WHERE url=:url")
+    suspend fun delete(url: String)
+}

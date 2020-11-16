@@ -26,12 +26,7 @@ class NewsRemoteMediator @Inject constructor(
 ) : RemoteMediator<Int, News>()
 {
 
-    private var searchKey: String? = null
-
-    fun setSearchKey(key: String?)
-    {
-        searchKey = key
-    }
+    var searchKey: String? = null
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, News>): MediatorResult
     {

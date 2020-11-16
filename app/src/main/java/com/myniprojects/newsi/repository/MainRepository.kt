@@ -5,9 +5,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.myniprojects.newsi.db.AppDatabase
 import com.myniprojects.newsi.domain.News
+import com.myniprojects.newsi.utils.Constants.INITIAL_LOAD_SIZE
+import com.myniprojects.newsi.utils.Constants.NETWORK_PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class NewsRepository @Inject constructor(
@@ -30,22 +34,17 @@ class NewsRepository @Inject constructor(
 
     fun getSearchResultStream(searchKey: String?): Flow<PagingData<News>>
     {
+        Timber.d("getSearchResultStream")
         val pagingSourceFactory = { database.newsDao.getNews() }
 
         return Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,
                 enablePlaceholders = false,
-                initialLoadSize = 1
+                initialLoadSize = INITIAL_LOAD_SIZE
             ),
-            remoteMediator = newsRemoteMediator.apply { setSearchKey(searchKey) },
+            remoteMediator = newsRemoteMediator.apply { this.searchKey = searchKey },
             pagingSourceFactory = pagingSourceFactory
         ).flow
-    }
-
-
-    companion object
-    {
-        private const val NETWORK_PAGE_SIZE = 50
     }
 }

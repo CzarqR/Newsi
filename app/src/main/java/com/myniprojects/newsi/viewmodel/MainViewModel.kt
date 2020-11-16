@@ -6,13 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.insertSeparators
-import androidx.paging.map
+import androidx.paging.*
 import com.myniprojects.livesh.liveData
 import com.myniprojects.newsi.adapters.NewsRecyclerModel
-import com.myniprojects.newsi.db.NewsDao
+import com.myniprojects.newsi.db.AppDatabase
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
@@ -25,7 +22,7 @@ import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
     private val newsRepository: NewsRepository,
-    private val newsDao: NewsDao,
+    private val appDatabase: AppDatabase,
     val sharedPreferences: SharedPreferences
 ) : ViewModel()
 {
@@ -57,6 +54,7 @@ class MainViewModel @ViewModelInject constructor(
         val newResult: Flow<PagingData<NewsRecyclerModel>> = newsRepository.getSearchResultStream(
             submittedKey
         )
+            .map { pagingData -> pagingData.filter { news -> news.desc != null } }
             .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
             .map {
                 it.insertSeparators { before, after ->
@@ -96,9 +94,23 @@ class MainViewModel @ViewModelInject constructor(
 
     fun likeNews(news: News)
     {
-        Timber.d("Like ${news.url}")
+        Timber.d("Like $news")
+
         viewModelScope.launch(Dispatchers.IO) {
-            newsDao.changeLike(!news.isLiked, news.url)
+            appDatabase.newsDao.changeLike(!news.isLiked, news.url)
+
+//            news.isLiked = !news.isLiked
+
+            val c = news.copy(isLiked = !news.isLiked)
+
+            if (c.isLiked)
+            {
+                appDatabase.domainNewsDao.insert(c)
+            }
+            else
+            {
+                appDatabase.domainNewsDao.delete(c.url)
+            }
         }
     }
 

@@ -17,5 +17,4 @@ class EntityToDomainMapper @Inject constructor() : ModelMapper<NewsEntity, News>
             entity.isLiked
         )
     }
-
 }

@@ -29,5 +29,5 @@ object DatabaseModule
 
     @Singleton
     @Provides
-    fun provideRunDao(db: AppDatabase): NewsDao = db.newsDao
+    fun provideNewsDao(db: AppDatabase): NewsDao = db.newsDao
 }
