@@ -55,6 +55,14 @@ class MainViewModel @ViewModelInject constructor(
             submittedKey
         )
             .map { pagingData -> pagingData.filter { news -> news.desc != null } }
+            .map { pagingData ->
+                pagingData.map { news ->
+                    news.isLiked = appDatabase.domainNewsDao.checkIfLiked(
+                        news.url
+                    ) > 0
+                    news
+                }
+            }
             .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
             .map {
                 it.insertSeparators { before, after ->
@@ -85,6 +93,7 @@ class MainViewModel @ViewModelInject constructor(
                 it.insertHeaderItem(NewsRecyclerModel.SeparatorItem("2020-10-09 21:10:00")) // todo load first item
             }
             .cachedIn(viewModelScope)
+
         PagingData
         currentSearchResult = newResult
         return newResult
@@ -120,4 +129,41 @@ class MainViewModel @ViewModelInject constructor(
         _openedNews.value = news
     }
 
+    val likedNews = newsRepository.getLikedNews().mapToRecyclerModel().cachedIn(viewModelScope)
+
+
+    private fun Flow<PagingData<News>>.mapToRecyclerModel(): Flow<PagingData<NewsRecyclerModel>>
+    {
+        return this.map { pagingData -> pagingData.filter { news -> news.desc != null } }
+            .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
+            .map {
+                it.insertSeparators { before, after ->
+                    if (after == null)
+                    {
+                        // we're at the end of the list
+                        return@insertSeparators null
+                    }
+
+                    if (before == null)
+                    {
+                        // we're at the beginning of the list
+                        return@insertSeparators null
+                    }
+
+                    // check between 2 items
+                    if (!before.news.date.isDateTheSame(after.news.date)) // different date
+                    {
+                        NewsRecyclerModel.SeparatorItem(after.news.date)
+                    }
+                    else
+                    {
+                        null
+                    }
+                }
+            }
+            .map {
+                it.insertHeaderItem(NewsRecyclerModel.SeparatorItem("2020-10-09 21:10:00")) // todo load first item
+            }
+
+    }
 }

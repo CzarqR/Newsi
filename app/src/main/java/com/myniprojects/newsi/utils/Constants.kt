@@ -32,6 +32,7 @@ object Constants
     const val SHARED_PREFERENCES_NAME = "newsi_data_sh"
 
     val DARK_MODE_SH = "KEY_DARK_MODE" to false
+    val FIRST_RUN_SH = "FIRST_RUN_KEY" to true
 
 
     // database

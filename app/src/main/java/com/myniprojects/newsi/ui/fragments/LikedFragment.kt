@@ -5,6 +5,8 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import com.myniprojects.newsi.R
@@ -15,6 +17,10 @@ import com.myniprojects.newsi.databinding.FragmentLikedBinding
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class LikedFragment : Fragment(R.layout.fragment_liked)
@@ -43,23 +49,37 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
                 likeNews(it)
             }
         )
+
         newsRecyclerAdapter = NewsRecyclerAdapter(newsClickListener)
 
-        binding.recViewNews.adapter = newsRecyclerAdapter.withLoadStateHeaderAndFooter(
-            header = NewsLoadStateAdapter { newsRecyclerAdapter.retry() },
-            footer = NewsLoadStateAdapter { newsRecyclerAdapter.retry() }
-        )
+        lifecycleScope.launch(Dispatchers.IO){
+            viewModel.likedNews.collectLatest {
+                Timber.d("Collect")
+                Timber.d(it.toString())
+                newsRecyclerAdapter.submitData(it)
+            }
+        }
+
+        binding.recViewNews.adapter = newsRecyclerAdapter
+
+//        binding.recViewNews.adapter = newsRecyclerAdapter.withLoadStateHeaderAndFooter(
+//            header = NewsLoadStateAdapter { newsRecyclerAdapter.retry() },
+//            footer = NewsLoadStateAdapter { newsRecyclerAdapter.retry() }
+//        )
 
     }
 
     private fun likeNews(news: News)
     {
-        TODO("Not yet implemented")
+        Timber.d("Liked $news")
+        viewModel.likeNews(news)
     }
 
     private fun openNews(news: News)
     {
-        TODO("Not yet implemented")
+        Timber.d("Opened $news")
+        viewModel.openNews(news)
+        findNavController().navigate(R.id.action_likedFragment_to_newsFragment)
     }
 
 }

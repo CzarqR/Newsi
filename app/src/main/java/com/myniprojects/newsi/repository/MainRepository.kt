@@ -47,4 +47,20 @@ class NewsRepository @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         ).flow
     }
+
+    fun getLikedNews(): Flow<PagingData<News>>
+    {
+        Timber.d("getLikedNews")
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE,
+                enablePlaceholders = false,
+                initialLoadSize = INITIAL_LOAD_SIZE
+            ),
+            pagingSourceFactory = { database.domainNewsDao.getNewsPaged() }
+        ).flow
+
+    }
+
 }
