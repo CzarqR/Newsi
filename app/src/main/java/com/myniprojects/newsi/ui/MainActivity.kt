@@ -84,6 +84,12 @@ class MainActivity : AppCompatActivity()
                     binding.bottomNavigationView.visibility = View.GONE
                     binding.appBarLayout.setExpanded(true)
                 }
+                R.id.settingsFragment->
+                {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                    binding.appBarLayout.setExpanded(true)
+
+                }
                 else ->
                 {
                     binding.bottomNavigationView.visibility = View.VISIBLE

@@ -2,8 +2,6 @@ package com.myniprojects.newsi.viewmodel
 
 import android.content.SharedPreferences
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
@@ -26,9 +24,8 @@ class MainViewModel @ViewModelInject constructor(
     val sharedPreferences: SharedPreferences
 ) : ViewModel()
 {
-    private val _openedNews = MutableLiveData<News>()
-    val openedNews: LiveData<News>
-        get() = _openedNews
+    lateinit var openedNews: News
+        private set
 
     private var currentSearchResult: Flow<PagingData<NewsRecyclerModel>>? = null
 
@@ -123,10 +120,30 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
+    fun likeOpenedNews()
+    {
+        Timber.d("Like opened news")
+
+        openedNews.isLiked = !openedNews.isLiked
+
+        viewModelScope.launch(Dispatchers.IO) {
+            appDatabase.newsDao.changeLike(openedNews.isLiked, openedNews.url)
+
+            if (openedNews.isLiked)
+            {
+                appDatabase.domainNewsDao.insert(openedNews)
+            }
+            else
+            {
+                appDatabase.domainNewsDao.delete(openedNews.url)
+            }
+        }
+    }
+
     fun openNews(news: News)
     {
         Timber.d("Open news $news")
-        _openedNews.value = news
+        openedNews = news
     }
 
     val likedNews = newsRepository.getLikedNews().mapToRecyclerModel().cachedIn(viewModelScope)

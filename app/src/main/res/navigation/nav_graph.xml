@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/likedFragment"
         android:name="com.myniprojects.newsi.ui.fragments.LikedFragment"
-        android:label="LikedFragment" >
+        android:label="@string/liked_news">
         <action
             android:id="@+id/action_likedFragment_to_newsFragment"
             app:destination="@id/newsFragment" />
@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.myniprojects.newsi.ui.fragments.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="@string/settings" />
     <fragment
         android:id="@+id/newsFragment"
         android:name="com.myniprojects.newsi.ui.fragments.NewsFragment" />

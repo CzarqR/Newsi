@@ -2,12 +2,12 @@ package com.myniprojects.newsi.ui.fragments
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -60,21 +60,26 @@ class NewsFragment : Fragment(R.layout.fragment_news)
             settings.javaScriptEnabled = true
 
         }
-        setObservers()
-    }
-
-    private fun setObservers()
-    {
-        viewModel.openedNews.observe(viewLifecycleOwner, {
-            binding.webView.loadUrl(it.url)
-            setActivityTitle(it.title)
-        })
+        binding.webView.loadUrl(viewModel.openedNews.url)
+        setActivityTitle(viewModel.openedNews.title)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
     {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_toolbar_news, menu)
+
+        val likedItem = menu.findItem(R.id.itemLike)
+        likedItem.icon = if (viewModel.openedNews.isLiked) ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.ic_baseline_favorite_24,
+            null
+        )
+        else ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.ic_baseline_favorite_border_24,
+            null
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean
@@ -84,6 +89,18 @@ class NewsFragment : Fragment(R.layout.fragment_news)
             R.id.itemLike ->
             {
                 Timber.d("Click like")
+                viewModel.likeOpenedNews()
+
+                item.icon = if (viewModel.openedNews.isLiked) ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_baseline_favorite_24,
+                    null
+                )
+                else ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_baseline_favorite_border_24,
+                    null
+                )
                 true
             }
             R.id.itemBrowser ->
@@ -91,7 +108,7 @@ class NewsFragment : Fragment(R.layout.fragment_news)
                 val browserIntent =
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(viewModel.openedNews.value!!.url)
+                        Uri.parse(viewModel.openedNews.url)
                     )
                 if (browserIntent.resolveActivity(requireActivity().packageManager) == null)
                 {

@@ -31,7 +31,7 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title="@string/trending_now"
-                app:titleTextColor="@color/white"
+                app:titleTextColor="@color/colorOnSecondary"
                 />
 
         </com.google.android.material.appbar.AppBarLayout>

@@ -13,4 +13,5 @@
     <string name="retry">Retry</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
+    <string name="liked_news">Liked News</string>
 </resources>

@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    // light
-    <color name="red_200">#ff6659</color>
-    <color name="red_500">#d32f2f</color>
-    <color name="red_700">#9a0007</color>
-    <color name="cyan_200">#56c8d8</color>
-    <color name="cyan_500">#0097a7</color>
-    <color name="cyan_700">#006978</color>
 
-    // dark
-    <color name="pink_200">#bc477b</color>
-    <color name="pink_500">#880e4f</color>
-    <color name="pink_700">#560027</color>
-    <color name="blue_200">#6ec6ff</color>
-    <color name="blue_500">#2196f3</color>
-    <color name="blue_700">#0069c0</color>
+    <color name="colorPrimaryLight">#ff6659</color>
+    <color name="colorPrimary">#d32f2f</color>
+    <color name="colorPrimaryVariant">#9a0007</color>
+    <color name="colorSecondary">#56c8d8</color>
+    <color name="colorSecondaryDark">#0097a7</color>
+    <color name="colorSecondaryVariant">#006978</color>
 
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorOnPrimary">#FF000000</color>
+    <color name="colorOnSecondary">#FFFFFFFF</color>
 
 
     //hart icon
