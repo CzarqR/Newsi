@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
     <fragment
@@ -9,7 +10,11 @@
         android:label="@string/trending_now">
         <action
             android:id="@+id/action_homeFragment_to_newsFragment"
-            app:destination="@id/newsFragment" />
+            app:destination="@id/newsFragment"
+            app:enterAnim="@anim/enter_from_bottom"
+            app:exitAnim="@anim/exit_to_top"
+            app:popEnterAnim="@anim/popenter_from_top"
+            app:popExitAnim="@anim/popexit_to_bottom" />
     </fragment>
     <fragment
         android:id="@+id/likedFragment"
@@ -17,7 +22,11 @@
         android:label="@string/liked_news">
         <action
             android:id="@+id/action_likedFragment_to_newsFragment"
-            app:destination="@id/newsFragment" />
+            app:destination="@id/newsFragment"
+            app:enterAnim="@anim/enter_from_bottom"
+            app:exitAnim="@anim/exit_to_top"
+            app:popEnterAnim="@anim/popenter_from_top"
+            app:popExitAnim="@anim/popexit_to_bottom" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
