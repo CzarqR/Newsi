@@ -14,7 +14,6 @@ import com.myniprojects.newsi.utils.Constants.NEWS_STARTING_PAGE_INDEX
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
-import java.io.InvalidObjectException
 import javax.inject.Inject
 
 
@@ -42,7 +41,7 @@ class NewsRemoteMediator @Inject constructor(
             {
                 Timber.d("PREPEND")
                 val remoteKeys = getRemoteKeyForFirstItem(state)
-                    ?: throw InvalidObjectException("Remote key and the prevKey should not be null")
+                    ?: return MediatorResult.Success(endOfPaginationReached = true)
                 remoteKeys.prevKey
                     ?: return MediatorResult.Success(endOfPaginationReached = true)
                 remoteKeys.prevKey
@@ -53,7 +52,7 @@ class NewsRemoteMediator @Inject constructor(
                 val remoteKeys = getRemoteKeyForLastItem(state)
                 if (remoteKeys?.nextKey == null)
                 {
-                    throw InvalidObjectException("Remote key should not be null for $loadType")
+                    return MediatorResult.Success(endOfPaginationReached = true)
                 }
                 remoteKeys.nextKey
             }

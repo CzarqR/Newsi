@@ -36,6 +36,7 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
         binding = FragmentLikedBinding.bind(view)
 
         initAdapter()
+        setupObservers()
     }
 
 
@@ -54,8 +55,7 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
 
         lifecycleScope.launch(Dispatchers.IO){
             viewModel.likedNews.collectLatest {
-                Timber.d("Collect")
-                Timber.d(it.toString())
+                Timber.d("Submit data. ${viewModel.scrollPosLiked.value}")
                 newsRecyclerAdapter.submitData(it)
             }
         }
@@ -71,6 +71,7 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
 
     private fun likeNews(news: News)
     {
+
         Timber.d("Liked $news")
         viewModel.likeNews(news)
     }
@@ -82,4 +83,22 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
         findNavController().navigate(R.id.action_likedFragment_to_newsFragment)
     }
 
+    private fun setupObservers()
+    {
+        viewModel.scrollPosLiked.observe(viewLifecycleOwner, {
+            it?.let {
+                Timber.d("Observed ${this.hashCode()} $it")
+                binding.recViewNews.layoutManager?.onRestoreInstanceState(it)
+            }
+        })
+    }
+
+
+    override fun onStop()
+    {
+        Timber.d("Stop")
+        super.onStop()
+        // save recyclerView state
+        viewModel.saveLikedScrollPosition(binding.recViewNews.layoutManager?.onSaveInstanceState())
+    }
 }

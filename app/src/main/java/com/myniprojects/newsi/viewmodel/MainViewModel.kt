@@ -1,7 +1,10 @@
 package com.myniprojects.newsi.viewmodel
 
 import android.content.SharedPreferences
+import android.os.Parcelable
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
@@ -183,4 +186,23 @@ class MainViewModel @ViewModelInject constructor(
             }
 
     }
+
+    fun saveHomeScrollPosition(onSaveInstanceState: Parcelable?)
+    {
+        _scrollPosHome.value = onSaveInstanceState
+    }
+
+    private val _scrollPosHome: MutableLiveData<Parcelable?> = MutableLiveData<Parcelable?>()
+    val scrollPosHome: LiveData<Parcelable?>
+        get() = _scrollPosHome
+
+
+    fun saveLikedScrollPosition(onSaveInstanceState: Parcelable?)
+    {
+        _scrollPosLiked.value = onSaveInstanceState
+    }
+
+    private val _scrollPosLiked: MutableLiveData<Parcelable?> = MutableLiveData<Parcelable?>()
+    val scrollPosLiked: LiveData<Parcelable?>
+        get() = _scrollPosLiked
 }

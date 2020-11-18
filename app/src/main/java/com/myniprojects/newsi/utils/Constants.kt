@@ -1,7 +1,6 @@
 package com.myniprojects.newsi.utils
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import java.time.format.DateTimeFormatter
 
 object Constants
@@ -19,14 +18,35 @@ object Constants
     const val LOCAL_DATE_FORMAT = "HH:mm MMM d"
     const val SEPARATOR_FORMAT = "d MMM"
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    val FORMATTER_NETWORK: DateTimeFormatter = DateTimeFormatter.ofPattern(NETWORK_DATE_FORMAT)
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    val FORMATTER_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern(LOCAL_DATE_FORMAT)
+    val FORMATTER_NETWORK: DateTimeFormatter? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+    {
+        DateTimeFormatter.ofPattern(NETWORK_DATE_FORMAT)
+    }
+    else
+    {
+        null
+    }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    val FORMATTER_SEPARATOR: DateTimeFormatter = DateTimeFormatter.ofPattern(SEPARATOR_FORMAT)
+
+    val FORMATTER_LOCAL: DateTimeFormatter? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+    {
+        DateTimeFormatter.ofPattern(LOCAL_DATE_FORMAT)
+    }
+    else
+    {
+        null
+    }
+
+
+    val FORMATTER_SEPARATOR: DateTimeFormatter? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+    {
+        DateTimeFormatter.ofPattern(SEPARATOR_FORMAT)
+    }
+    else
+    {
+        null
+    }
 
     // SharedPreferences
     const val SHARED_PREFERENCES_NAME = "newsi_data_sh"

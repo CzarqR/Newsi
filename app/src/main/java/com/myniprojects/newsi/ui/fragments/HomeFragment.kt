@@ -20,12 +20,10 @@ import com.myniprojects.newsi.utils.hideKeyboard
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import timber.log.Timber
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home)
@@ -49,24 +47,34 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             }
         }
     }
+//      Not used, it swipe recView all the time to top
+//    private fun initSearch()
+//    {
+//        Timber.d("Init search")
+//
+//        // Scroll to top when the list is refreshed from network.
+//        lifecycleScope.launch {
+//            newsRecyclerAdapter.loadStateFlow
+//                // Only emit when REFRESH LoadState for RemoteMediator changes.
+//                .distinctUntilChangedBy { it.refresh }
+//                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+//                .filter { it.refresh is LoadState.NotLoading }
+//                .collect {
+//                    binding.recViewNews.scrollToPosition(0)
+//                }
+//        }
+//    }
 
-    private fun initSearch()
+
+    private fun setupObservers()
     {
-        Timber.d("Init search")
-
-        // Scroll to top when the list is refreshed from network.
-        lifecycleScope.launch {
-            newsRecyclerAdapter.loadStateFlow
-                // Only emit when REFRESH LoadState for RemoteMediator changes.
-                .distinctUntilChangedBy { it.refresh }
-                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
-                .filter { it.refresh is LoadState.NotLoading }
-                .collect {
-                    binding.recViewNews.scrollToPosition(0)
-                }
-        }
+        viewModel.scrollPosHome.observe(viewLifecycleOwner, {
+            it?.let {
+                Timber.d("Observed ${this.hashCode()} $it")
+                binding.recViewNews.layoutManager?.onRestoreInstanceState(it)
+            }
+        })
     }
-
 
     private fun initAdapter()
     {
@@ -123,7 +131,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         savedInstanceState: Bundle?
     ): View?
     {
-        Timber.d("onCreateView")
+        Timber.d("onCreateView ${this.hashCode()}")
         setHasOptionsMenu(true)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -138,7 +146,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
         initAdapter()
         search()
-        initSearch()
+
+        setupObservers()
 
         binding.butRetry.setOnClickListener { newsRecyclerAdapter.retry() }
     }
@@ -236,6 +245,15 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         Timber.d("Id liked: ${news.url}")
         viewModel.likeNews(news)
     }
+
+    override fun onStop()
+    {
+        super.onStop()
+        // save recyclerView state
+        viewModel.saveHomeScrollPosition(binding.recViewNews.layoutManager?.onSaveInstanceState())
+    }
+
+
 }
 
 
