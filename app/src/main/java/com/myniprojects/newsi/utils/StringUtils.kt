@@ -7,10 +7,13 @@ import android.text.Spanned
 import androidx.core.text.HtmlCompat
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.FORMATTER_SEPARATOR
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 fun String.toSpannedHtml(): Spanned
 {
@@ -92,9 +95,11 @@ fun String.getDateFormatted(context: Context): String
         val d = LocalDateTime.parse(
             this,
             Constants.FORMATTER_NETWORK
-        )
+        ).with(LocalTime.MIDNIGHT).with(LocalTime.MIN)
 
-        val t = LocalDateTime.now()
+        val t = LocalDateTime.now().with(LocalTime.MIDNIGHT).with(LocalTime.MIN)
+
+        ChronoUnit.DAYS.between(d, t)
 
         return when (d.until(t, ChronoUnit.DAYS))
         {

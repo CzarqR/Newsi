@@ -1,8 +1,6 @@
 package com.myniprojects.newsi.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.webkit.WebView
@@ -13,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentNewsBinding
+import com.myniprojects.newsi.utils.openWeb
 import com.myniprojects.newsi.utils.setActivityTitle
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -105,18 +104,9 @@ class NewsFragment : Fragment(R.layout.fragment_news)
             }
             R.id.itemBrowser ->
             {
-                val browserIntent =
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(viewModel.openedNews.url)
-                    )
-                if (browserIntent.resolveActivity(requireActivity().packageManager) == null)
+                if (!openWeb(viewModel.openedNews.url))
                 {
-                    Timber.d("Cannot open")
-                }
-                else
-                {
-                    startActivity(browserIntent)
+                    Timber.d("Couldn't open web page")
                 }
                 true
             }

@@ -15,6 +15,7 @@ import com.myniprojects.newsi.adapters.NewsLoadStateAdapter
 import com.myniprojects.newsi.adapters.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentLikedBinding
 import com.myniprojects.newsi.domain.News
+import com.myniprojects.newsi.utils.openWeb
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -79,8 +80,18 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
     private fun openNews(news: News)
     {
         Timber.d("Opened $news")
-        viewModel.openNews(news)
-        findNavController().navigate(R.id.action_likedFragment_to_newsFragment)
+
+        if (viewModel.openInExternal.value == true)
+        {
+            if (!openWeb(news.url))
+            {
+                Timber.d("Couldn't open web page")
+            }
+        }
+        else
+        {
+            findNavController().navigate(R.id.action_likedFragment_to_newsFragment)
+        }
     }
 
     private fun setupObservers()

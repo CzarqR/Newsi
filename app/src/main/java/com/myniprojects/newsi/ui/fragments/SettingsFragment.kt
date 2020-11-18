@@ -7,6 +7,7 @@ import androidx.fragment.app.activityViewModels
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentSettingsBinding
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
+import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -39,6 +40,18 @@ class SettingsFragment : Fragment(R.layout.fragment_settings)
                     .putBoolean(DARK_MODE_SH.first, isChecked)
                     .apply()
             }
+
+            viewModel.openInExternal.observe(viewLifecycleOwner, {
+                openInExternalBrowser.isChecked = it
+            })
+
+
+            openInExternalBrowser.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.sharedPreferences.edit()
+                    .putBoolean(OPEN_IN_EXTERNAL_SH.first, isChecked)
+                    .apply()
+            }
+
         }
     }
 }

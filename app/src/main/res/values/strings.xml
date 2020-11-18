@@ -14,4 +14,5 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="liked_news">Liked News</string>
+    <string name="open_in_external">Open in external browser</string>
 </resources>

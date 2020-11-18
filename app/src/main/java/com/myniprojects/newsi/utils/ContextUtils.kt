@@ -2,11 +2,14 @@ package com.myniprojects.newsi.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import timber.log.Timber
 
 fun Context.hideKeyboard(view: View)
 {
@@ -41,5 +44,23 @@ fun Fragment.setActivityTitle(@StringRes id: Int)
 fun Fragment.setActivityTitle(title: String)
 {
     (activity as AppCompatActivity?)!!.supportActionBar?.title = title
-
 }
+
+fun Fragment.openWeb(url: String): Boolean
+{
+    val browserIntent =
+        Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(url)
+        )
+    return if (browserIntent.resolveActivity(requireActivity().packageManager) == null)
+    {
+        false
+    }
+    else
+    {
+        startActivity(browserIntent)
+        true
+    }
+}
+

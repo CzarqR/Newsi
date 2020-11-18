@@ -17,6 +17,7 @@ import com.myniprojects.newsi.adapters.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentHomeBinding
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.utils.hideKeyboard
+import com.myniprojects.newsi.utils.openWeb
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -236,8 +237,20 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private fun openNews(news: News)
     {
         Timber.d("Id opened: ${news.url}")
-        findNavController().navigate(R.id.action_homeFragment_to_newsFragment)
+
         viewModel.openNews(news)
+
+        if (viewModel.openInExternal.value == true)
+        {
+            if (!openWeb(news.url))
+            {
+                Timber.d("Couldn't open web page")
+            }
+        }
+        else
+        {
+            findNavController().navigate(R.id.action_homeFragment_to_newsFragment)
+        }
     }
 
     private fun likeNews(news: News)

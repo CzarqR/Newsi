@@ -14,6 +14,7 @@ import com.myniprojects.newsi.db.AppDatabase
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
+import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.utils.isDateTheSame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -100,6 +101,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     val darkMode = sharedPreferences.liveData(DARK_MODE_SH)
+    val openInExternal = sharedPreferences.liveData(OPEN_IN_EXTERNAL_SH)
 
     fun likeNews(news: News)
     {
