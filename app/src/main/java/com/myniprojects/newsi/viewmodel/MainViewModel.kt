@@ -9,11 +9,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.myniprojects.livesh.liveData
-import com.myniprojects.newsi.adapters.NewsRecyclerModel
+import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerModel
 import com.myniprojects.newsi.db.AppDatabase
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
+import com.myniprojects.newsi.utils.Constants.DATE_REGEX
 import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.utils.isDateTheSame
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +56,14 @@ class MainViewModel @ViewModelInject constructor(
         val newResult: Flow<PagingData<NewsRecyclerModel>> = newsRepository.getSearchResultStream(
             submittedKey
         )
-            .map { pagingData -> pagingData.filter { news -> news.desc != null } }
+            .map { pagingData ->
+                pagingData.filter { news ->
+                    news.desc != null && DATE_REGEX.matches(
+                        news.date
+                    )
+
+                }
+            }
             .map { pagingData ->
                 pagingData.map { news ->
                     news.isLiked = appDatabase.domainNewsDao.checkIfLiked(
@@ -65,34 +73,7 @@ class MainViewModel @ViewModelInject constructor(
                 }
             }
             .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
-            .map {
-                it.insertSeparators { before, after ->
-                    if (after == null)
-                    {
-                        // we're at the end of the list
-                        return@insertSeparators null
-                    }
-
-                    if (before == null)
-                    {
-                        // we're at the beginning of the list
-                        return@insertSeparators null
-                    }
-
-                    // check between 2 items
-                    if (!before.news.date.isDateTheSame(after.news.date)) // different date
-                    {
-                        NewsRecyclerModel.SeparatorItem(after.news.date)
-                    }
-                    else
-                    {
-                        null
-                    }
-                }
-            }
-            .map {
-                it.insertHeaderItem(NewsRecyclerModel.SeparatorItem("2020-10-09 21:10:00")) // todo load first item
-            }
+            .insertDateSeparators()
             .cachedIn(viewModelScope)
 
         PagingData
@@ -102,6 +83,9 @@ class MainViewModel @ViewModelInject constructor(
 
     val darkMode = sharedPreferences.liveData(DARK_MODE_SH)
     val openInExternal = sharedPreferences.liveData(OPEN_IN_EXTERNAL_SH)
+
+    fun openInExternalValue() =
+        sharedPreferences.getBoolean(OPEN_IN_EXTERNAL_SH.first, OPEN_IN_EXTERNAL_SH.second)
 
     fun likeNews(news: News)
     {
@@ -158,36 +142,39 @@ class MainViewModel @ViewModelInject constructor(
     {
         return this.map { pagingData -> pagingData.filter { news -> news.desc != null } }
             .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
-            .map {
-                it.insertSeparators { before, after ->
-                    if (after == null)
-                    {
-                        // we're at the end of the list
-                        return@insertSeparators null
-                    }
-
-                    if (before == null)
-                    {
-                        // we're at the beginning of the list
-                        return@insertSeparators null
-                    }
-
-                    // check between 2 items
-                    if (!before.news.date.isDateTheSame(after.news.date)) // different date
-                    {
-                        NewsRecyclerModel.SeparatorItem(after.news.date)
-                    }
-                    else
-                    {
-                        null
-                    }
-                }
-            }
-            .map {
-                it.insertHeaderItem(NewsRecyclerModel.SeparatorItem("2020-10-09 21:10:00")) // todo load first item
-            }
+            .insertDateSeparators()
 
     }
+
+    private fun Flow<PagingData<NewsRecyclerModel.NewsItem>>.insertDateSeparators(): Flow<PagingData<NewsRecyclerModel>>
+    {
+        return map {
+            it.insertSeparators { before, after ->
+                if (after == null)
+                {
+                    // we're at the end of the list
+                    return@insertSeparators null
+                }
+
+                if (before == null)
+                {
+                    // we're at the beginning of the list
+                    return@insertSeparators NewsRecyclerModel.SeparatorItem(after.news.date)
+                }
+
+                // check between 2 items
+                if (!before.news.date.isDateTheSame(after.news.date)) // different date
+                {
+                    NewsRecyclerModel.SeparatorItem(after.news.date)
+                }
+                else
+                {
+                    null
+                }
+            }
+        }
+    }
+
 
     fun saveHomeScrollPosition(onSaveInstanceState: Parcelable?)
     {
@@ -208,3 +195,4 @@ class MainViewModel @ViewModelInject constructor(
     val scrollPosLiked: LiveData<Parcelable?>
         get() = _scrollPosLiked
 }
+

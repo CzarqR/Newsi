@@ -6,11 +6,13 @@ import android.view.*
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.MenuCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentNewsBinding
+import com.myniprojects.newsi.utils.getShareIntent
 import com.myniprojects.newsi.utils.openWeb
 import com.myniprojects.newsi.utils.setActivityTitle
 import com.myniprojects.newsi.viewmodel.MainViewModel
@@ -66,6 +68,7 @@ class NewsFragment : Fragment(R.layout.fragment_news)
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
     {
         super.onCreateOptionsMenu(menu, inflater)
+        MenuCompat.setGroupDividerEnabled(menu, true)
         inflater.inflate(R.menu.menu_toolbar_news, menu)
 
         val likedItem = menu.findItem(R.id.itemLike)
@@ -110,10 +113,18 @@ class NewsFragment : Fragment(R.layout.fragment_news)
                 }
                 true
             }
+            R.id.itemShare ->
+            {
+                Timber.d("Share")
+                startActivity(getShareIntent(viewModel.openedNews.url))
+                true
+            }
             else ->
             {
                 super.onOptionsItemSelected(item)
             }
         }
     }
+
+
 }

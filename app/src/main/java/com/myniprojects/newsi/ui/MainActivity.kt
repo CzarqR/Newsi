@@ -77,17 +77,16 @@ class MainActivity : AppCompatActivity()
 
         // change visibility in news fragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.appBarLayout.setExpanded(true)
             when (destination.id)
             {
                 R.id.newsFragment ->
                 {
                     binding.bottomNavigationView.visibility = View.GONE
-                    binding.appBarLayout.setExpanded(true)
                 }
                 R.id.settingsFragment->
                 {
                     binding.bottomNavigationView.visibility = View.VISIBLE
-                    binding.appBarLayout.setExpanded(true)
 
                 }
                 else ->

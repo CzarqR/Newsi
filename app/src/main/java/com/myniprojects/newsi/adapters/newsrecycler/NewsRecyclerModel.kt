@@ -1,4 +1,4 @@
-package com.myniprojects.newsi.adapters
+package com.myniprojects.newsi.adapters.newsrecycler
 
 import com.myniprojects.newsi.domain.News
 

@@ -17,6 +17,7 @@ object Constants
     const val NETWORK_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     const val LOCAL_DATE_FORMAT = "HH:mm MMM d"
     const val SEPARATOR_FORMAT = "d MMM"
+    val DATE_REGEX = "^\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d\$".toRegex()
 
 
     val FORMATTER_NETWORK: DateTimeFormatter? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)

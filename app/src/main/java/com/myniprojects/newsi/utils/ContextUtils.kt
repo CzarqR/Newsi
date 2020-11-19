@@ -8,8 +8,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
-import timber.log.Timber
 
 fun Context.hideKeyboard(view: View)
 {
@@ -64,3 +64,25 @@ fun Fragment.openWeb(url: String): Boolean
     }
 }
 
+fun Activity.getShareIntent(text: String): Intent
+{
+    return ShareCompat.IntentBuilder.from(this)
+        .setText(text)
+        .setType("text/plain").intent
+}
+
+fun Fragment.getShareIntent(text: String): Intent
+{
+    return requireActivity().getShareIntent(text)
+}
+
+
+fun Context.pxToDp(px: Float): Float
+{
+    return px / resources.displayMetrics.density
+}
+
+fun Context.dpToPx(dp: Float): Float
+{
+    return dp * resources.displayMetrics.density
+}

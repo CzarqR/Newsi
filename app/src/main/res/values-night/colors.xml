@@ -8,4 +8,7 @@
     <color name="colorSecondaryDark">#2196f3</color>
     <color name="colorSecondaryVariant">#0069c0</color>
 
+    //overflow menu
+    <color name="overflow_menu">#FFFFFFFF</color>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.myniprojects.newsi.adapters
+package com.myniprojects.newsi.adapters.newsrecycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -15,4 +15,7 @@
     <string name="yesterday">Yesterday</string>
     <string name="liked_news">Liked News</string>
     <string name="open_in_external">Open in external browser</string>
+    <string name="share">Share</string>
+    <string name="open_in_browser">Open in browser</string>
+    <string name="more_options">More options</string>
 </resources>

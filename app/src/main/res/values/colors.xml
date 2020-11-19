@@ -17,5 +17,8 @@
     <color name="favourite_unselected">#C5BDBD</color>
     <color name="favourite_selected">#F44336</color>
 
+    //overflow menu
+    <color name="overflow_menu">#FF000000</color>
+
 
 </resources>

@@ -1,5 +1,6 @@
 package com.myniprojects.newsi.utils
 
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.widget.ImageView
 import android.widget.TextView
@@ -7,7 +8,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.button.MaterialButton
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.FORMATTER_LOCAL
@@ -26,12 +31,46 @@ fun ImageView.bindImage(imgUrl: String?)
     else
     {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
+
+
         Glide.with(context)
             .load(imgUri)
             .apply(
                 RequestOptions()
-                       .placeholder(R.drawable.loading_anim)
-                       .error(R.drawable.ic_baseline_broken_image_24))
+                    .placeholder(R.drawable.loading_anim)
+                    .error(R.drawable.ic_baseline_broken_image_24)
+            )
+            .listener(
+                object : RequestListener<Drawable?>
+                {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable?>?,
+                        isFirstResource: Boolean
+                    ): Boolean
+                    {
+                        this@bindImage.maxHeight = this@bindImage.context.dpToPx(50f).toInt()
+                        this@bindImage.scaleType = ImageView.ScaleType.FIT_CENTER
+
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable?>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean
+                    {
+                        this@bindImage.maxHeight = this@bindImage.context.dpToPx(250f).toInt()
+                        this@bindImage.scaleType = ImageView.ScaleType.CENTER_CROP
+
+                        return false
+                    }
+
+                })
             .into(this)
     }
 

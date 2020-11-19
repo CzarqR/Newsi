@@ -9,9 +9,32 @@
         android:title="@string/like"
         app:showAsAction="always" />
 
+
     <item
-        android:id="@+id/itemBrowser"
-        android:icon="@drawable/ic_baseline_open_in_browser_24"
-        android:title="@string/like"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/empty"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:orderInCategory="101"
+        android:title="@string/more_options"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <group android:id="@+id/grp1">
+                <item
+                    android:id="@+id/itemBrowser"
+                    android:icon="@drawable/ic_baseline_open_in_browser_24"
+                    android:title="@string/open_in_browser"
+                    app:iconTint="@color/overflow_menu" />
+            </group>
+            <group android:id="@+id/grp2">
+                <item
+                    android:id="@+id/itemShare"
+                    android:icon="@drawable/ic_baseline_share_24"
+                    android:title="@string/share"
+                    app:iconTint="@color/overflow_menu" />
+            </group>
+        </menu>
+
+    </item>
+
+
 </menu>

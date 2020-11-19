@@ -13,7 +13,7 @@
 
         <variable
             name="newsClickListener"
-            type="com.myniprojects.newsi.adapters.NewsClickListener"
+            type="com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener"
             />
     </data>
 
@@ -42,7 +42,8 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/article_image"
-                android:maxHeight="350dp"
+                android:maxHeight="250dp"
+                android:scaleType="centerCrop"
                 app:imageUrl="@{news.imageUrl}"
                 tools:srcCompat="@tools:sample/backgrounds/scenic"
                 />

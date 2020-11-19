@@ -11,9 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import com.myniprojects.newsi.R
-import com.myniprojects.newsi.adapters.NewsClickListener
-import com.myniprojects.newsi.adapters.NewsLoadStateAdapter
-import com.myniprojects.newsi.adapters.NewsRecyclerAdapter
+import com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener
+import com.myniprojects.newsi.adapters.newsrecycler.NewsLoadStateAdapter
+import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentHomeBinding
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.utils.hideKeyboard
@@ -237,10 +237,10 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private fun openNews(news: News)
     {
         Timber.d("Id opened: ${news.url}")
-
+        Timber.d(viewModel.openInExternal.value.toString())
         viewModel.openNews(news)
 
-        if (viewModel.openInExternal.value == true)
+        if (viewModel.openInExternalValue())
         {
             if (!openWeb(news.url))
             {

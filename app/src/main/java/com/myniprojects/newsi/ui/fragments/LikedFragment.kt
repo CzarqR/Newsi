@@ -2,17 +2,13 @@ package com.myniprojects.newsi.ui.fragments
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
-import com.google.android.material.snackbar.Snackbar
 import com.myniprojects.newsi.R
-import com.myniprojects.newsi.adapters.NewsClickListener
-import com.myniprojects.newsi.adapters.NewsLoadStateAdapter
-import com.myniprojects.newsi.adapters.NewsRecyclerAdapter
+import com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener
+import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentLikedBinding
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.utils.openWeb
