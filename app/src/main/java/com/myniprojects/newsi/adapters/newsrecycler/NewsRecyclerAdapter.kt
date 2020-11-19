@@ -19,7 +19,7 @@ class NewsRecyclerAdapter(
         {
             R.layout.news_recycler_item ->
             {
-                NewsViewHolder.from(parent)
+                NewsViewHolder.create(parent)
             }
             R.layout.news_separator_item ->
             {

@@ -136,6 +136,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     val likedNews = newsRepository.getLikedNews().mapToRecyclerModel().cachedIn(viewModelScope)
+    val countLikeNews = appDatabase.domainNewsDao.countLiked()
 
 
     private fun Flow<PagingData<News>>.mapToRecyclerModel(): Flow<PagingData<NewsRecyclerModel>>

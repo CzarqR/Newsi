@@ -12,7 +12,7 @@ class NewsViewHolder private constructor(
 {
     companion object
     {
-        fun from(parent: ViewGroup): NewsViewHolder
+        fun create(parent: ViewGroup): NewsViewHolder
         {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = NewsRecyclerItemBinding.inflate(layoutInflater, parent, false)

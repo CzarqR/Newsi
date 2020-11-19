@@ -2,6 +2,7 @@ package com.myniprojects.newsi.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -58,12 +59,6 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
         }
 
         binding.recViewNews.adapter = newsRecyclerAdapter
-
-//        binding.recViewNews.adapter = newsRecyclerAdapter.withLoadStateHeaderAndFooter(
-//            header = NewsLoadStateAdapter { newsRecyclerAdapter.retry() },
-//            footer = NewsLoadStateAdapter { newsRecyclerAdapter.retry() }
-//        )
-
     }
 
     private fun likeNews(news: News)
@@ -77,6 +72,7 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
     {
         Timber.d("Opened $news")
 
+        viewModel.openNews(news)
         if (viewModel.openInExternal.value == true)
         {
             if (!openWeb(news.url))
@@ -96,6 +92,22 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
             it?.let {
                 Timber.d("Observed ${this.hashCode()} $it")
                 binding.recViewNews.layoutManager?.onRestoreInstanceState(it)
+            }
+        })
+
+        viewModel.countLikeNews.observe(viewLifecycleOwner, {
+            with(binding)
+            {
+                if (it == 0L)
+                {
+                    recViewNews.isVisible = false
+                    txtNoLiked.isVisible = true
+                }
+                else
+                {
+                    recViewNews.isVisible = true
+                    txtNoLiked.isVisible = false
+                }
             }
         })
     }

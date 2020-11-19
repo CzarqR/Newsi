@@ -1,5 +1,6 @@
 package com.myniprojects.newsi.db
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
@@ -23,4 +24,7 @@ interface DomainNewsDao
 
     @Query("SELECT COUNT(url) FROM domain_news WHERE url=:url")
     suspend fun checkIfLiked(url: String): Int
+
+    @Query("SELECT COUNT(url) FROM domain_news")
+    fun countLiked(): LiveData<Long>
 }

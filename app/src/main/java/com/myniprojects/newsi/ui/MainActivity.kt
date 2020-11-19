@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity()
     {
 
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_Newsi)
         observeSharedPreferences()
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

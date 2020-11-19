@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.google.android.material.snackbar.Snackbar
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener
 import com.myniprojects.newsi.adapters.newsrecycler.NewsLoadStateAdapter
@@ -18,6 +17,7 @@ import com.myniprojects.newsi.databinding.FragmentHomeBinding
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.utils.hideKeyboard
 import com.myniprojects.newsi.utils.openWeb
+import com.myniprojects.newsi.utils.showSnackbarWithCancellation
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -96,31 +96,44 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
         newsRecyclerAdapter.addLoadStateListener { loadState ->
 
-            if (newsRecyclerAdapter.itemCount == 0)
+            with(binding)
             {
-                // todo better loading and showing no connection
-                binding.recViewNews.isVisible = loadState.source.refresh is LoadState.NotLoading
-                binding.proBar.isVisible = loadState.source.refresh is LoadState.Loading
-                binding.butRetry.isVisible = loadState.source.refresh is LoadState.Error
-            }
-            else
-            {
-                binding.recViewNews.isVisible = true
-                binding.proBar.isVisible = false
-                binding.butRetry.isVisible = loadState.source.refresh is LoadState.Error
-            }
-
-            // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
-            val errorState = loadState.source.append as? LoadState.Error
-                ?: loadState.source.prepend as? LoadState.Error
-                ?: loadState.append as? LoadState.Error
-                ?: loadState.prepend as? LoadState.Error
-            errorState?.let {
-                Snackbar.make(binding.root, R.string.couldnt_load_data, Snackbar.LENGTH_SHORT)
-                    .setAction(R.string.ok) {
-                        // close snackbar
+                when (loadState.refresh)
+                {
+                    is LoadState.NotLoading ->
+                    {
+                        recViewNews.isVisible = true
+                        butRetry.isVisible = false
+                        proBar.isVisible = false
                     }
-                    .show()
+                    LoadState.Loading ->
+                    {
+                        recViewNews.isVisible = false
+                        butRetry.isVisible = false
+                        proBar.isVisible = true
+                    }
+                    is LoadState.Error ->
+                    {
+                        proBar.isVisible = false
+
+                        recViewNews.isVisible = false
+                        butRetry.isVisible = true
+                        if (newsRecyclerAdapter.itemCount > 0)
+                        {
+                            recViewNews.isVisible = true
+                            butRetry.isVisible = false
+
+                            binding.root.showSnackbarWithCancellation(R.string.couldnt_load_new_data)
+                        }
+                        else
+                        {
+                            recViewNews.isVisible = false
+                            butRetry.isVisible = true
+
+                            binding.root.showSnackbarWithCancellation(R.string.couldnt_load_data)
+                        }
+                    }
+                }
             }
         }
     }

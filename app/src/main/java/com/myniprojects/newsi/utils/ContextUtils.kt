@@ -10,6 +10,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import com.myniprojects.newsi.R
 
 fun Context.hideKeyboard(view: View)
 {
@@ -85,4 +87,20 @@ fun Context.pxToDp(px: Float): Float
 fun Context.dpToPx(dp: Float): Float
 {
     return dp * resources.displayMetrics.density
+}
+
+fun View.showSnackbarWithCancellation(
+    @StringRes id: Int,
+    snackbarLength: Int = Snackbar.LENGTH_LONG
+)
+{
+    Snackbar.make(
+        this,
+        id,
+        snackbarLength
+    )
+        .setAction(R.string.ok) {
+            // close snackbar
+        }
+        .show()
 }

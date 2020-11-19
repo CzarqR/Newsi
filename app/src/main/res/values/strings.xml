@@ -18,4 +18,6 @@
     <string name="share">Share</string>
     <string name="open_in_browser">Open in browser</string>
     <string name="more_options">More options</string>
+    <string name="couldnt_load_new_data">We can\'t load current news. You see news loaded previously. Check Your internet connection</string>
+    <string name="no_liked_news">You don\'t have any liked news &#128533;</string>
 </resources>

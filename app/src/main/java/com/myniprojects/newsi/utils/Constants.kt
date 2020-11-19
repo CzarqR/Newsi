@@ -59,6 +59,5 @@ object Constants
 
     // database
     const val DATABASE_NAME = "newsi.db"
-
 }
 

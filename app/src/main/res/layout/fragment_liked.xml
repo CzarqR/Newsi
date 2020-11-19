@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
 
     <androidx.recyclerview.widget.RecyclerView
@@ -14,4 +14,14 @@
         tools:listitem="@layout/news_recycler_item"
         />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txtNoLiked"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_liked_news"
+        android:padding="16dp"
+        android:textAppearance="?attr/textAppearanceHeadline4"
+
+        />
 </FrameLayout>

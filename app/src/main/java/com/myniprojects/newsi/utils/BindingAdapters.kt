@@ -31,6 +31,7 @@ fun ImageView.bindImage(imgUrl: String?)
     else
     {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
+        this@bindImage.maxHeight = this@bindImage.context.dpToPx(250f).toInt()
 
 
         Glide.with(context)
@@ -113,7 +114,6 @@ fun MaterialButton.setSelection(isLiked: Boolean?)
 @BindingAdapter("timeFormat")
 fun TextView.setTimeFormat(date: String?)
 {
-    // todo validation, some news have different date format
     if (date != null)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
