@@ -59,5 +59,8 @@ object Constants
 
     // database
     const val DATABASE_NAME = "newsi.db"
+
+    // WorkManager
+    const val REFRESH_WORK_NAME = "REFRESH_DATA_WORKER"
 }
 

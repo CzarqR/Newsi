@@ -8,7 +8,7 @@ buildscript {
         moshi_version = "1.11.0"
         timber_version = "4.7.1"
         coroutines_version = "1.4.0"
-        hilt_viewmodels_version = "1.0.0-alpha02"
+        hilt_compiler_version = "1.0.0-alpha02"
         recycler_version = "1.2.0-alpha06"
         cardview_version = "1.0.0"
         glide_version = "4.11.0"
@@ -17,6 +17,7 @@ buildscript {
         lifecycle_version = "2.2.0"
         paging_version = "3.0.0-alpha09"
         okhttp_version = "4.9.0"
+        work_version = "2.4.0"
     }
     repositories {
         google()
