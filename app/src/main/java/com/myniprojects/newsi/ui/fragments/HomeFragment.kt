@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener
 import com.myniprojects.newsi.adapters.newsrecycler.NewsLoadStateAdapter
 import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerAdapter
@@ -24,7 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-
+import com.myniprojects.newsi.R
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home)

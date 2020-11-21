@@ -1,14 +1,22 @@
 package com.myniprojects.newsi.ui
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.myniprojects.newsi.BuildConfig
+import com.myniprojects.newsi.R
+import com.myniprojects.newsi.utils.Constants.CHANNEL_FRESH_NEWS_ID
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.Constants.FIRST_RUN_SH
+import com.myniprojects.newsi.utils.Constants.LAST_RUN_SH
 import com.myniprojects.newsi.utils.Constants.REFRESH_WORK_NAME
 import com.myniprojects.newsi.wrok.RefreshDataWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -18,6 +26,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 @HiltAndroidApp
 class BaseApplication : Application(), androidx.work.Configuration.Provider
@@ -54,11 +63,20 @@ class BaseApplication : Application(), androidx.work.Configuration.Provider
             sharedPreferences.edit()
                 .putBoolean(FIRST_RUN_SH.first, false)
                 .putBoolean(DARK_MODE_SH.first, currentNightMode)
+                .putLong(LAST_RUN_SH.first, System.currentTimeMillis())
                 .apply()
         }
         else
         {
             Timber.d("Not first run")
+        }
+    }
+
+    private fun delayedInit()
+    {
+        applicationScope.launch {
+            createNotificationChannel()
+            setupRecurringWork()
         }
     }
 
@@ -72,17 +90,17 @@ class BaseApplication : Application(), androidx.work.Configuration.Provider
     private fun setupRecurringWork()
     {
         val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .setRequiresBatteryNotLow(true)
-            .setRequiresCharging(true)
+//            .setRequiredNetworkType(NetworkType.UNMETERED)
+//            .setRequiresBatteryNotLow(true)
+//            .setRequiresCharging(true)
             .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                {
-                    setRequiresDeviceIdle(true)
-                }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+//                {
+//                    setRequiresDeviceIdle(true)
+//                }
             }.build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
+        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
 
@@ -93,13 +111,22 @@ class BaseApplication : Application(), androidx.work.Configuration.Provider
         )
     }
 
-    private fun delayedInit()
-    {
-        applicationScope.launch {
-            setupRecurringWork()
-        }
-    }
 
     // endregion
+
+    private fun createNotificationChannel()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            val channel = NotificationChannel(
+                CHANNEL_FRESH_NEWS_ID,
+                applicationContext.getString(R.string.channel_base_name),
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = applicationContext.getString(R.string.channel_base_desc)
+            }
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        }
+    }
 
 }

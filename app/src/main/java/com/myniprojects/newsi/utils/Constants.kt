@@ -55,6 +55,7 @@ object Constants
     val DARK_MODE_SH = "KEY_DARK_MODE" to false
     val OPEN_IN_EXTERNAL_SH = "KEY_OPEN_IN_EXTERNAL" to false
     val FIRST_RUN_SH = "FIRST_RUN_KEY" to true
+    val LAST_RUN_SH = "LAST_RUN_KEY" to 0L
 
 
     // database
@@ -62,5 +63,14 @@ object Constants
 
     // WorkManager
     const val REFRESH_WORK_NAME = "REFRESH_DATA_WORKER"
+    const val LOAD_AFTER_MIN = 1000 * 60 //* 60 * 2
+
+
+    // Notifications
+    const val CHANNEL_FRESH_NEWS_ID = "chanel_fresh_news_id"
+    const val SEARCH_INPUT_KEY = "SEARCH_INPUT_KEY"
+    const val FRESH_NEWS_NOTIFICATION_ID = 13
+
+
 }
 

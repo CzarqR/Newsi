@@ -1,12 +1,13 @@
 package com.myniprojects.newsi.ui
 
-import android.content.res.Configuration
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.RemoteInput
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,9 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.ActivityMainBinding
+import com.myniprojects.newsi.utils.Constants.FRESH_NEWS_NOTIFICATION_ID
+import com.myniprojects.newsi.utils.Constants.SEARCH_INPUT_KEY
+import com.myniprojects.newsi.utils.createFreshNewsNotification
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -24,6 +28,7 @@ class MainActivity : AppCompatActivity()
 {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private var notificationManager: NotificationManager? = null
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -36,10 +41,12 @@ class MainActivity : AppCompatActivity()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        receiveInput()
 
         setupNavigation()
-    }
 
+        notificationManager?.cancelAll() // clear all notification
+    }
 
     private fun observeSharedPreferences()
     {
@@ -84,7 +91,7 @@ class MainActivity : AppCompatActivity()
                 {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
-                R.id.settingsFragment->
+                R.id.settingsFragment ->
                 {
                     binding.bottomNavigationView.visibility = View.VISIBLE
 
@@ -102,4 +109,11 @@ class MainActivity : AppCompatActivity()
         return navController.navigateUp()
     }
 
+    private fun receiveInput()
+    {
+        val intent = this.intent
+        val remoteInput = RemoteInput.getResultsFromIntent(intent)
+        viewModel.submittedKey = remoteInput?.getCharSequence(SEARCH_INPUT_KEY)?.toString()
+        notificationManager?.cancelAll()
+    }
 }

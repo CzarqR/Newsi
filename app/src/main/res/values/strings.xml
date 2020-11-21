@@ -20,4 +20,11 @@
     <string name="more_options">More options</string>
     <string name="couldnt_load_new_data">We can\'t load current news. You see news loaded previously. Check Your internet connection</string>
     <string name="no_liked_news">You don\'t have any liked news &#128533;</string>
+    <string name="channel_base_name">Fresh news</string>
+    <string name="channel_base_desc">Notifications about loading news</string>
+    <string name="open">Open</string>
+    <string name="fresh_news">Fresh news</string>
+    <string name="fresh_news_content">"We loaded fresh news for You. Check it! &#x1f4f0;"</string>
+    <string name="fresh_news_hint">Search news</string>
+    <string name="find_news">Find news</string>
 </resources>

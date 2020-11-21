@@ -13,6 +13,7 @@ import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerModel
 import com.myniprojects.newsi.db.AppDatabase
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.repository.NewsRepository
+import com.myniprojects.newsi.utils.Constants
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.Constants.DATE_REGEX
 import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
@@ -40,6 +41,12 @@ class MainViewModel @ViewModelInject constructor(
 
     var submittedKey: String? = null
 
+    init
+    {
+        sharedPreferences.edit()
+            .putLong(Constants.LAST_RUN_SH.first, System.currentTimeMillis())
+            .apply()
+    }
 
     fun searchNews(): Flow<PagingData<NewsRecyclerModel>>
     {
@@ -190,6 +197,11 @@ class MainViewModel @ViewModelInject constructor(
     fun saveLikedScrollPosition(onSaveInstanceState: Parcelable?)
     {
         _scrollPosLiked.value = onSaveInstanceState
+    }
+
+    fun initInput(inputText: String?)
+    {
+        Timber.d(inputText)
     }
 
     private val _scrollPosLiked: MutableLiveData<Parcelable?> = MutableLiveData<Parcelable?>()
