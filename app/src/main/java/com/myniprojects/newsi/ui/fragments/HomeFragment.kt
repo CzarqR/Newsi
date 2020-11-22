@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.google.android.material.chip.Chip
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener
 import com.myniprojects.newsi.adapters.newsrecycler.NewsLoadStateAdapter
@@ -261,8 +262,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             R.id.itemRefresh ->
             {
                 Timber.d("Refresh")
-//                newsRecyclerAdapter.refresh()
                 search(true)
+                binding.recViewNews.smoothScrollToPosition(0)
                 true
             }
             else ->
@@ -291,6 +292,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             findNavController().navigate(R.id.action_homeFragment_to_newsFragment)
         }
     }
+
+
 
     private fun likeNews(news: News)
     {

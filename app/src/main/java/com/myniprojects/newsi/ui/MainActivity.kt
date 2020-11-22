@@ -3,6 +3,7 @@ package com.myniprojects.newsi.ui
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.chip.Chip
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.ActivityMainBinding
 import com.myniprojects.newsi.utils.Constants.HOT_NEWS
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity()
         setupNavigation()
 
         initNotification()
+        initChips()
     }
 
     private fun initNotification()
@@ -145,6 +148,47 @@ class MainActivity : AppCompatActivity()
             viewModel.submittedKey = it
             return
         }
+    }
+
+    private fun initChips()
+    {
+
+        viewModel.showHotNews.observe(this, {
+            Timber.d("Observed state $it")
+            if (it)
+            {
+                val hotNews: Array<String> = resources.getStringArray(R.array.hot_news_keywords)
+
+                with(binding.chipsQuickSearch)
+                {
+
+                    val inflater = LayoutInflater.from(context)
+
+                    val children = hotNews.map { keyword ->
+                        val chip = inflater.inflate(R.layout.hot_news_chip, this, false) as Chip
+                        chip.text = keyword
+
+
+                        chip.setOnClickListener {
+                            Timber.d("Click $keyword")
+                            viewModel.submittedKey = keyword
+                        }
+
+                        chip
+                    }
+
+                    for (chip in children)
+                    {
+                        addView(chip)
+                    }
+                }
+            }
+            else
+            {
+                binding.chipsQuickSearch.removeAllViews()
+            }
+        })
+
 
     }
 }

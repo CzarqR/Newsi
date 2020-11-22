@@ -12,7 +12,7 @@ object Constants
     const val HEADER_HOST = "x-rapidapi-host: webit-news-search.p.rapidapi.com"
     const val HEADER_KEY = "x-rapidapi-key: 3afd6a0154mshce0ba6c65a48cb8p18fdf5jsn9a31d07e7509"
     const val NEWS_STARTING_PAGE_INDEX = 0
-    const val NETWORK_PAGE_SIZE = 30
+    const val NETWORK_PAGE_SIZE = 50
     const val INITIAL_LOAD_SIZE = 2
 
     // date-time format
@@ -55,6 +55,7 @@ object Constants
     const val SHARED_PREFERENCES_NAME = "newsi_data_sh"
 
     val DARK_MODE_SH = "KEY_DARK_MODE" to false
+    val HOT_NEWS_SH = "KEY_HOT_NEWS" to true
     val OPEN_IN_EXTERNAL_SH = "KEY_OPEN_IN_EXTERNAL" to false
     val FIRST_RUN_SH = "FIRST_RUN_KEY" to true
     val LAST_RUN_SH = "LAST_RUN_KEY" to 0L

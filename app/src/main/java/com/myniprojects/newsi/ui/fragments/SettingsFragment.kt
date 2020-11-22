@@ -7,6 +7,7 @@ import androidx.fragment.app.activityViewModels
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentSettingsBinding
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
+import com.myniprojects.newsi.utils.Constants.HOT_NEWS_SH
 import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,6 +50,18 @@ class SettingsFragment : Fragment(R.layout.fragment_settings)
             openInExternalBrowser.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.sharedPreferences.edit()
                     .putBoolean(OPEN_IN_EXTERNAL_SH.first, isChecked)
+                    .apply()
+            }
+
+
+            viewModel.showHotNews.observe(viewLifecycleOwner, {
+                showHotNews.isChecked = it
+            })
+
+
+            showHotNews.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.sharedPreferences.edit()
+                    .putBoolean(HOT_NEWS_SH.first, isChecked)
                     .apply()
             }
 

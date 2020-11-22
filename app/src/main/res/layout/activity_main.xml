@@ -36,8 +36,9 @@
                 />
 
             <HorizontalScrollView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"
                 >
 
@@ -45,6 +46,8 @@
                     android:id="@+id/chipsQuickSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
                     app:singleLine="true"
                     app:singleSelection="true"
                     />

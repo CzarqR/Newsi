@@ -29,4 +29,24 @@
     <string name="find_news">Find news</string>
     <string name="hot_news_notification">Covid</string>
     <string name="news_not_found">News not found</string>
+    <string name="show_hot_news">Show hot news bar</string>
+
+    <string-array name="hot_news_keywords">
+        <item>Covid</item>
+        <item>US Election</item>
+        <item>Biden</item>
+        <item>Trump</item>
+        <item>Netflix</item>
+        <item>Football</item>
+        <item>UFC</item>
+        <item>NBA</item>
+        <item>Weather</item>
+        <item>Christmas</item>
+        <item>2020</item>
+        <item>Pope Francis</item>
+        <item>Twitter</item>
+
+    </string-array>
+
+
 </resources>

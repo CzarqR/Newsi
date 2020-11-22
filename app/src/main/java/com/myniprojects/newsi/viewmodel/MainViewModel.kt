@@ -16,6 +16,7 @@ import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.Constants.DATE_REGEX
+import com.myniprojects.newsi.utils.Constants.HOT_NEWS_SH
 import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.utils.isDateTheSame
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +96,7 @@ class MainViewModel @ViewModelInject constructor(
 
     val darkMode = sharedPreferences.liveData(DARK_MODE_SH)
     val openInExternal = sharedPreferences.liveData(OPEN_IN_EXTERNAL_SH)
+    val showHotNews = sharedPreferences.liveData(HOT_NEWS_SH)
 
     fun openInExternalValue() =
         sharedPreferences.getBoolean(OPEN_IN_EXTERNAL_SH.first, OPEN_IN_EXTERNAL_SH.second)
