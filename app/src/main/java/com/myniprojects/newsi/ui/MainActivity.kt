@@ -15,9 +15,8 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.ActivityMainBinding
-import com.myniprojects.newsi.utils.Constants.FRESH_NEWS_NOTIFICATION_ID
+import com.myniprojects.newsi.utils.Constants.HOT_NEWS
 import com.myniprojects.newsi.utils.Constants.SEARCH_INPUT_KEY
-import com.myniprojects.newsi.utils.createFreshNewsNotification
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -42,9 +41,21 @@ class MainActivity : AppCompatActivity()
         setContentView(binding.root)
 
         receiveInput()
-
         setupNavigation()
 
+        initNotification()
+    }
+
+    private fun initNotification()
+    {
+        notificationManager = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+        {
+            getSystemService(NotificationManager::class.java)
+        }
+        else
+        {
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
         notificationManager?.cancelAll() // clear all notification
     }
 
@@ -90,15 +101,22 @@ class MainActivity : AppCompatActivity()
                 R.id.newsFragment ->
                 {
                     binding.bottomNavigationView.visibility = View.GONE
+                    binding.chipsQuickSearch.visibility = View.GONE
                 }
                 R.id.settingsFragment ->
                 {
                     binding.bottomNavigationView.visibility = View.VISIBLE
-
+                    binding.chipsQuickSearch.visibility = View.GONE
                 }
-                else ->
+                R.id.homeFragment ->
                 {
                     binding.bottomNavigationView.visibility = View.VISIBLE
+                    binding.chipsQuickSearch.visibility = View.VISIBLE
+                }
+                R.id.likedFragment ->
+                {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                    binding.chipsQuickSearch.visibility = View.GONE
                 }
             }
         }
@@ -111,9 +129,22 @@ class MainActivity : AppCompatActivity()
 
     private fun receiveInput()
     {
+        // search keyword
         val intent = this.intent
         val remoteInput = RemoteInput.getResultsFromIntent(intent)
-        viewModel.submittedKey = remoteInput?.getCharSequence(SEARCH_INPUT_KEY)?.toString()
-        notificationManager?.cancelAll()
+
+        remoteInput?.getCharSequence(SEARCH_INPUT_KEY)?.toString()?.let {
+            Timber.d("Received search keyword $it")
+            viewModel.submittedKey = it
+            return
+        }
+
+        // hot news
+        getIntent()?.getStringExtra(HOT_NEWS.first)?.let {
+            Timber.d("Received intent hot news search keyword $it")
+            viewModel.submittedKey = it
+            return
+        }
+
     }
 }

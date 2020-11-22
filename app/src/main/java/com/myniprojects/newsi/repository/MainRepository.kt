@@ -35,7 +35,7 @@ class NewsRepository @Inject constructor(
     fun getSearchResultStream(searchKey: String?): Flow<PagingData<News>>
     {
         Timber.d("getSearchResultStream")
-        val pagingSourceFactory = { database.newsDao.getNews() }
+        val pagingSourceFactory = { database.cacheNewsDao.getNews() }
 
         return Pager(
             config = PagingConfig(

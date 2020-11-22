@@ -6,9 +6,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.setPadding
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
@@ -17,6 +19,7 @@ import com.google.android.material.button.MaterialButton
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.FORMATTER_LOCAL
 import com.myniprojects.newsi.utils.Constants.FORMATTER_NETWORK
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -31,7 +34,9 @@ fun ImageView.bindImage(imgUrl: String?)
     else
     {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
-        this@bindImage.maxHeight = this@bindImage.context.dpToPx(250f).toInt()
+
+//        val pv = (context.resources.displayMetrics.widthPixels * 3.6 / 8.0).toInt()
+//        this@bindImage.setPadding(pv, 0, pv, 0)
 
 
         Glide.with(context)
@@ -51,8 +56,8 @@ fun ImageView.bindImage(imgUrl: String?)
                         isFirstResource: Boolean
                     ): Boolean
                     {
-                        this@bindImage.maxHeight = this@bindImage.context.dpToPx(50f).toInt()
-                        this@bindImage.scaleType = ImageView.ScaleType.FIT_CENTER
+                        val pv = (context.resources.displayMetrics.widthPixels * 3.0 / 8.0).toInt()
+                        this@bindImage.setPadding(pv, 0, pv, 0)
 
                         return false
                     }
@@ -65,13 +70,11 @@ fun ImageView.bindImage(imgUrl: String?)
                         isFirstResource: Boolean
                     ): Boolean
                     {
-                        this@bindImage.maxHeight = this@bindImage.context.dpToPx(250f).toInt()
-                        this@bindImage.scaleType = ImageView.ScaleType.CENTER_CROP
-
+                        this@bindImage.setPadding(0)
                         return false
                     }
-
                 })
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(this)
     }
 

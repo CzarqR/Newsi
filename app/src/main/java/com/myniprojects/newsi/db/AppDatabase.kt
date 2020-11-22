@@ -15,7 +15,7 @@ import com.myniprojects.newsi.domain.News
 )
 abstract class AppDatabase : RoomDatabase()
 {
-    abstract val newsDao: NewsDao
+    abstract val cacheNewsDao: NewsDao
     abstract val remoteKeysDao: RemoteKeysDao
     abstract val domainNewsDao: DomainNewsDao
 }

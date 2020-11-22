@@ -83,7 +83,7 @@ class NewsRemoteMediator @Inject constructor(
                 {
                     Timber.d("Clear db")
                     database.remoteKeysDao.clearRemoteKeys()
-                    database.newsDao.clearNews()
+                    database.cacheNewsDao.clearNews()
                 }
 
                 val prevKey = if (page == NEWS_STARTING_PAGE_INDEX) null else page - 1
@@ -97,7 +97,7 @@ class NewsRemoteMediator @Inject constructor(
                 }
 
                 database.remoteKeysDao.insertAll(keys)
-                database.newsDao.insertAll(networkToEntityMapper.mapToNewModelList(news))
+                database.cacheNewsDao.insertAll(networkToEntityMapper.mapToNewModelList(news))
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         }

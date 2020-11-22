@@ -32,5 +32,15 @@
         android:text="@string/retry"
         />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txtNotFound"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|top"
+        android:padding="16dp"
+        android:text="@string/news_not_found"
+        android:textAppearance="?attr/textAppearanceHeadline4"
+        android:visibility="gone"
+        />
 
 </FrameLayout>

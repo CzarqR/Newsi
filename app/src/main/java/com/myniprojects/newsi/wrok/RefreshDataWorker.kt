@@ -10,7 +10,7 @@ import androidx.work.WorkerParameters
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants
 import com.myniprojects.newsi.utils.Constants.LAST_RUN_SH
-import com.myniprojects.newsi.utils.Constants.LOAD_AFTER_MIN
+import com.myniprojects.newsi.utils.Constants.LOAD_AFTER_MINIMUM
 import com.myniprojects.newsi.utils.createFreshNewsNotification
 import retrofit2.HttpException
 import timber.log.Timber
@@ -26,21 +26,16 @@ class RefreshDataWorker @WorkerInject constructor(
     {
         return try
         {
-            Timber.d("Do work!")
             val lastRun = sharedPreferences.getLong(LAST_RUN_SH.first, LAST_RUN_SH.second)
-            Timber.d("lastRun = $lastRun")
             val current = System.currentTimeMillis()
-            Timber.d("current = $current")
 
-            if (current > lastRun + LOAD_AFTER_MIN)
+            Timber.d("Do work. Last run = $lastRun. Current = $current. Minimum time separator = $LOAD_AFTER_MINIMUM")
+
+            if (current > lastRun + LOAD_AFTER_MINIMUM)
             {
-                Timber.d("DO WORK ALL GOOD")
-
+                Timber.d("Loading news")
                 loadDataAndShowNot()
-
-                Timber.d("End Do work!")
             }
-
             Result.success()
         }
         catch (e: HttpException)

@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener
 import com.myniprojects.newsi.adapters.newsrecycler.NewsLoadStateAdapter
 import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerAdapter
@@ -19,11 +20,12 @@ import com.myniprojects.newsi.utils.openWeb
 import com.myniprojects.newsi.utils.showSnackbarWithCancellation
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
-import com.myniprojects.newsi.R
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home)
@@ -37,12 +39,12 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private var searchJob: Job? = null
 
     // passing null will get trending news, giving any not empty string will search news by keyword
-    private fun search()
+    private fun search(forceNewLoad: Boolean = false)
     {
         // Make sure we cancel the previous job before creating a new one
         searchJob?.cancel()
         searchJob = lifecycleScope.launch {
-            viewModel.searchNews().collectLatest {
+            viewModel.searchNews(forceNewLoad).collectLatest {
                 newsRecyclerAdapter.submitData(it)
             }
         }
@@ -70,8 +72,32 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     {
         viewModel.scrollPosHome.observe(viewLifecycleOwner, {
             it?.let {
-                Timber.d("Observed ${this.hashCode()} $it")
                 binding.recViewNews.layoutManager?.onRestoreInstanceState(it)
+            }
+        })
+
+        viewModel.countHomeNews.observe(viewLifecycleOwner, {
+            it?.let {
+                lifecycleScope.launch {
+                    newsRecyclerAdapter.loadStateFlow.collectLatest { loadSate ->
+                        withContext(Dispatchers.Main)
+                        {
+                            when (loadSate.mediator?.refresh)
+                            {
+                                is LoadState.NotLoading ->
+                                {
+                                    binding.txtNotFound.isVisible = it == 0L
+                                }
+                                LoadState.Loading, is LoadState.Error ->
+                                {
+                                    binding.txtNotFound.isVisible = false
+                                }
+                            }
+                        }
+
+                    }
+                }
+                binding.txtNotFound.isVisible = it <= 0
             }
         })
     }
@@ -235,7 +261,8 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             R.id.itemRefresh ->
             {
                 Timber.d("Refresh")
-                newsRecyclerAdapter.refresh()
+//                newsRecyclerAdapter.refresh()
+                search(true)
                 true
             }
             else ->

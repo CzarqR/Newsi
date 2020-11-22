@@ -36,6 +36,11 @@ class MainViewModel @ViewModelInject constructor(
     private var currentSearchResult: Flow<PagingData<NewsRecyclerModel>>? = null
 
 
+    val likedNews = newsRepository.getLikedNews().mapToRecyclerModel().cachedIn(viewModelScope)
+    val countLikeNews = appDatabase.domainNewsDao.countLiked()
+
+    val countHomeNews = appDatabase.cacheNewsDao.countLiked()
+
     var currentKey: String? = null
         private set
 
@@ -48,12 +53,12 @@ class MainViewModel @ViewModelInject constructor(
             .apply()
     }
 
-    fun searchNews(): Flow<PagingData<NewsRecyclerModel>>
+    fun searchNews(forceNewLoad: Boolean = false): Flow<PagingData<NewsRecyclerModel>>
     {
         Timber.d("Search news with key:$submittedKey")
         val lastResult = currentSearchResult
 
-        if (currentKey == submittedKey && lastResult != null)
+        if (!forceNewLoad && currentKey == submittedKey && lastResult != null)
         {
             return lastResult
         }
@@ -99,9 +104,7 @@ class MainViewModel @ViewModelInject constructor(
         Timber.d("Like $news")
 
         viewModelScope.launch(Dispatchers.IO) {
-            appDatabase.newsDao.changeLike(!news.isLiked, news.url)
-
-//            news.isLiked = !news.isLiked
+            appDatabase.cacheNewsDao.changeLike(!news.isLiked, news.url)
 
             val c = news.copy(isLiked = !news.isLiked)
 
@@ -123,7 +126,7 @@ class MainViewModel @ViewModelInject constructor(
         openedNews.isLiked = !openedNews.isLiked
 
         viewModelScope.launch(Dispatchers.IO) {
-            appDatabase.newsDao.changeLike(openedNews.isLiked, openedNews.url)
+            appDatabase.cacheNewsDao.changeLike(openedNews.isLiked, openedNews.url)
 
             if (openedNews.isLiked)
             {
@@ -141,10 +144,6 @@ class MainViewModel @ViewModelInject constructor(
         Timber.d("Open news $news")
         openedNews = news
     }
-
-    val likedNews = newsRepository.getLikedNews().mapToRecyclerModel().cachedIn(viewModelScope)
-    val countLikeNews = appDatabase.domainNewsDao.countLiked()
-
 
     private fun Flow<PagingData<News>>.mapToRecyclerModel(): Flow<PagingData<NewsRecyclerModel>>
     {
@@ -197,11 +196,6 @@ class MainViewModel @ViewModelInject constructor(
     fun saveLikedScrollPosition(onSaveInstanceState: Parcelable?)
     {
         _scrollPosLiked.value = onSaveInstanceState
-    }
-
-    fun initInput(inputText: String?)
-    {
-        Timber.d(inputText)
     }
 
     private val _scrollPosLiked: MutableLiveData<Parcelable?> = MutableLiveData<Parcelable?>()

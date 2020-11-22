@@ -1,5 +1,6 @@
 package com.myniprojects.newsi.db
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
@@ -24,4 +25,7 @@ interface NewsDao
 
     @Query("UPDATE news_entity SET isLiked = :isLiked WHERE url = :url")
     suspend fun changeLike(isLiked: Boolean, url: String)
+
+    @Query("SELECT COUNT(url) FROM news_entity")
+    fun countLiked(): LiveData<Long>
 }

@@ -35,6 +35,24 @@
                 app:title="@string/trending_now"
                 />
 
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways"
+                >
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipsQuickSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleLine="true"
+                    app:singleSelection="true"
+                    />
+
+
+            </HorizontalScrollView>
+
+
         </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -46,7 +64,9 @@
             app:defaultNavHost="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:navGraph="@navigation/nav_graph"
-            />
+            >
+
+        </androidx.fragment.app.FragmentContainerView>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

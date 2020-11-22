@@ -10,13 +10,14 @@ import androidx.core.content.ContextCompat
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.ui.MainActivity
 import com.myniprojects.newsi.utils.Constants.CHANNEL_FRESH_NEWS_ID
+import com.myniprojects.newsi.utils.Constants.HOT_NEWS
 import com.myniprojects.newsi.utils.Constants.SEARCH_INPUT_KEY
 
 fun Context.createFreshNewsNotification(): Notification
 {
     val openResultIntent = Intent(this, MainActivity::class.java)
     val openPendingIntent: PendingIntent = PendingIntent.getActivity(
-        this, 0, openResultIntent, 0
+        this, 0, openResultIntent, PendingIntent.FLAG_UPDATE_CURRENT
     )
 
     val searchInput: RemoteInput = RemoteInput.Builder(SEARCH_INPUT_KEY).run {
@@ -25,11 +26,25 @@ fun Context.createFreshNewsNotification(): Notification
     }
 
     val searchAction: NotificationCompat.Action = NotificationCompat.Action.Builder(
-        R.drawable.ic_launcher_foreground,
+        0,
         getString(R.string.find_news),
         openPendingIntent
     ).addRemoteInput(searchInput)
         .build()
+
+    val openHotIntent = Intent(this, MainActivity::class.java).putExtra(
+        HOT_NEWS.first,
+        getString(HOT_NEWS.second)
+    )
+    val openHotPendingIntent: PendingIntent = PendingIntent.getActivity(
+        this, 0, openHotIntent, PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
+    val openHotAction: NotificationCompat.Action = NotificationCompat.Action.Builder(
+        0,
+        getString(HOT_NEWS.second),
+        openHotPendingIntent
+    ).build()
 
     return NotificationCompat.Builder(this, CHANNEL_FRESH_NEWS_ID)
         .setContentTitle(getString(R.string.fresh_news))
@@ -40,6 +55,7 @@ fun Context.createFreshNewsNotification(): Notification
         .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
         .setAutoCancel(true)
         .setContentIntent(openPendingIntent)
+        .addAction(openHotAction)
         .addAction(searchAction)
         .build()
 }

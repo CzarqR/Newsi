@@ -7,16 +7,14 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
 import com.myniprojects.newsi.BuildConfig
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.CHANNEL_FRESH_NEWS_ID
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.Constants.FIRST_RUN_SH
 import com.myniprojects.newsi.utils.Constants.LAST_RUN_SH
+import com.myniprojects.newsi.utils.Constants.LOAD_DEFAULT_TIME
 import com.myniprojects.newsi.utils.Constants.REFRESH_WORK_NAME
 import com.myniprojects.newsi.wrok.RefreshDataWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -90,17 +88,15 @@ class BaseApplication : Application(), androidx.work.Configuration.Provider
     private fun setupRecurringWork()
     {
         val constraints = Constraints.Builder()
-//            .setRequiredNetworkType(NetworkType.UNMETERED)
-//            .setRequiresBatteryNotLow(true)
-//            .setRequiresCharging(true)
-            .apply {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-//                {
-//                    setRequiresDeviceIdle(true)
-//                }
-            }.build()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiresBatteryNotLow(true)
+//            .setRequiresCharging(true) // do not require charging
+            .build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.MINUTES)
+        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(
+            LOAD_DEFAULT_TIME,
+            TimeUnit.HOURS
+        )
             .setConstraints(constraints)
             .build()
 

@@ -22,6 +22,6 @@
         android:text="@string/no_liked_news"
         android:padding="16dp"
         android:textAppearance="?attr/textAppearanceHeadline4"
-
         />
+
 </FrameLayout>
