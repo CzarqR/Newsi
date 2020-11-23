@@ -177,9 +177,6 @@ class MainActivity : AppCompatActivity()
                         val c = v as Chip
                         val chipText = c.text.toString().toLowerCase(Locale.getDefault())
 
-                        Timber.d(chipText)
-
-
                         if (chipText == submittedQuery)
                         {
                             c.isChecked = true
@@ -196,7 +193,6 @@ class MainActivity : AppCompatActivity()
     private fun initChips()
     {
         viewModel.showHotNews.observe(this, {
-            Timber.d("Observed state $it")
             if (it)
             {
                 val hotNews: Array<String> = resources.getStringArray(R.array.hot_news_keywords)
@@ -211,7 +207,6 @@ class MainActivity : AppCompatActivity()
                         chip.text = keyword
 
                         chip.setOnCheckedChangeListener { _, isChecked ->
-                            Timber.d("Click $keyword, $isChecked")
                             if (isChecked)
                             {
                                 viewModel.submitQuery(keyword)

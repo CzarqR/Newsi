@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.myniprojects.livesh.liveData
+import com.myniprojects.livesh.getBoolean
+import com.myniprojects.livesh.putLong
 import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerModel
 import com.myniprojects.newsi.db.AppDatabase
 import com.myniprojects.newsi.domain.News
@@ -43,7 +45,7 @@ class MainViewModel @ViewModelInject constructor(
     init
     {
         sharedPreferences.edit()
-            .putLong(Constants.LAST_RUN_SH.first, System.currentTimeMillis())
+            .putLong(Constants.LAST_RUN_SH, System.currentTimeMillis())
             .apply()
     }
 
@@ -103,7 +105,7 @@ class MainViewModel @ViewModelInject constructor(
     val showHotNews = sharedPreferences.liveData(HOT_NEWS_SH)
 
     fun openInExternalValue() =
-        sharedPreferences.getBoolean(OPEN_IN_EXTERNAL_SH.first, OPEN_IN_EXTERNAL_SH.second)
+        sharedPreferences.getBoolean(OPEN_IN_EXTERNAL_SH)
 
     fun likeNews(news: News)
     {

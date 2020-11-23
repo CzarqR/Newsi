@@ -10,6 +10,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
 import com.myniprojects.newsi.BuildConfig
 import com.myniprojects.newsi.R
+import com.myniprojects.livesh.getBoolean
 import com.myniprojects.newsi.utils.Constants.CHANNEL_FRESH_NEWS_ID
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
 import com.myniprojects.newsi.utils.Constants.FIRST_RUN_SH
@@ -53,7 +54,7 @@ class BaseApplication : Application(), androidx.work.Configuration.Provider
 
     private fun checkFirstRun()
     {
-        val firstRun = sharedPreferences.getBoolean(FIRST_RUN_SH.first, FIRST_RUN_SH.second)
+        val firstRun = sharedPreferences.getBoolean(FIRST_RUN_SH)
         if (firstRun)
         {
             Timber.d("First run")

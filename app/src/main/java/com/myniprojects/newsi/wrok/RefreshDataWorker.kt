@@ -7,6 +7,7 @@ import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.myniprojects.livesh.getLong
 import com.myniprojects.newsi.repository.NewsRepository
 import com.myniprojects.newsi.utils.Constants
 import com.myniprojects.newsi.utils.Constants.LAST_RUN_SH
@@ -26,7 +27,7 @@ class RefreshDataWorker @WorkerInject constructor(
     {
         return try
         {
-            val lastRun = sharedPreferences.getLong(LAST_RUN_SH.first, LAST_RUN_SH.second)
+            val lastRun = sharedPreferences.getLong(LAST_RUN_SH)
             val current = System.currentTimeMillis()
 
             Timber.d("Do work. Last run = $lastRun. Current = $current. Minimum time separator = $LOAD_AFTER_MINIMUM")

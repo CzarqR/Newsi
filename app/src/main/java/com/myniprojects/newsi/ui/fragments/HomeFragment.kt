@@ -44,8 +44,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 //      Not used, it swipe recView all the time to top
 //    private fun initSearch()
 //    {
-//        Timber.d("Init search")
-//
 //        // Scroll to top when the list is refreshed from network.
 //        lifecycleScope.launch {
 //            newsRecyclerAdapter.loadStateFlow
@@ -163,7 +161,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         savedInstanceState: Bundle?
     ): View?
     {
-        Timber.d("onCreateView ${this.hashCode()}")
         setHasOptionsMenu(true)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -222,7 +219,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
     {
-        Timber.d("onCreateOptionsMenu")
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_toolbar_home, menu)
 
@@ -243,7 +239,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             {
                 override fun onQueryTextSubmit(textInput: String?): Boolean
                 {
-                    Timber.d("onQueryTextSubmit $textInput")
                     hideKeyboard()
                     viewModel.submitQuery(textInput)
                     return true
@@ -262,13 +257,11 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             {
                 override fun onMenuItemActionExpand(p0: MenuItem?): Boolean
                 {
-                    Timber.d("onMenuItemActionExpand")
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean
                 {
-                    Timber.d("onMenuItemActionCollapse")
                     viewModel.submitQuery(null)
                     return true
                 }
@@ -285,8 +278,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         {
             R.id.itemRefresh ->
             {
-                Timber.d("Refresh")
-
                 binding.recViewNews.smoothScrollToPosition(0)
                 newsRecyclerAdapter.refresh()
                 true

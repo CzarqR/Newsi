@@ -13,6 +13,7 @@ import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerAdapter
 import com.myniprojects.newsi.databinding.FragmentLikedBinding
 import com.myniprojects.newsi.domain.News
 import com.myniprojects.newsi.utils.openWeb
+import com.myniprojects.newsi.utils.showSnackbarWithCancellation
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +52,7 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
 
         newsRecyclerAdapter = NewsRecyclerAdapter(newsClickListener)
 
-        lifecycleScope.launch(Dispatchers.IO){
+        lifecycleScope.launch(Dispatchers.IO) {
             viewModel.likedNews.collectLatest {
                 Timber.d("Submit data. ${viewModel.scrollPosLiked.value}")
                 newsRecyclerAdapter.submitData(it)
@@ -78,6 +79,9 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
             if (!openWeb(news.url))
             {
                 Timber.d("Couldn't open web page")
+                binding.root.showSnackbarWithCancellation(
+                    R.string.cannot_open_web
+                )
             }
         }
         else
@@ -90,7 +94,6 @@ class LikedFragment : Fragment(R.layout.fragment_liked)
     {
         viewModel.scrollPosLiked.observe(viewLifecycleOwner, {
             it?.let {
-                Timber.d("Observed ${this.hashCode()} $it")
                 binding.recViewNews.layoutManager?.onRestoreInstanceState(it)
             }
         })

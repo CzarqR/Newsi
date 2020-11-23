@@ -15,6 +15,7 @@ import com.myniprojects.newsi.databinding.FragmentNewsBinding
 import com.myniprojects.newsi.utils.getShareIntent
 import com.myniprojects.newsi.utils.openWeb
 import com.myniprojects.newsi.utils.setActivityTitle
+import com.myniprojects.newsi.utils.showSnackbarWithCancellation
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -110,6 +111,9 @@ class NewsFragment : Fragment(R.layout.fragment_news)
                 if (!openWeb(viewModel.openedNews.url))
                 {
                     Timber.d("Couldn't open web page")
+                    binding.root.showSnackbarWithCancellation(
+                        R.string.cannot_open_web
+                    )
                 }
                 true
             }

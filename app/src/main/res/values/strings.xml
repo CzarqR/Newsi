@@ -22,7 +22,6 @@
     <string name="no_liked_news">You don\'t have any liked news. Add some by clicking hart icon on news.</string>
     <string name="channel_base_name">Fresh news</string>
     <string name="channel_base_desc">Notifications about loading news</string>
-    <string name="open">Open</string>
     <string name="fresh_news">Fresh news</string>
     <string name="fresh_news_content">"We loaded fresh news for You. Check it! &#x1f4f0;"</string>
     <string name="fresh_news_hint">Search news</string>
@@ -31,6 +30,7 @@
     <string name="news_not_found">News not found</string>
     <string name="show_hot_news">Show hot news bar</string>
     <string name="refresh">Refresh</string>
+    <string name="cannot_open_web">Web page cannot be opened. Probably Your phone does not have installed browser</string>
 
     <string-array name="hot_news_keywords">
         <item>Covid</item>
@@ -46,8 +46,6 @@
         <item>2020</item>
         <item>Pope Francis</item>
         <item>Twitter</item>
-
     </string-array>
-
 
 </resources>

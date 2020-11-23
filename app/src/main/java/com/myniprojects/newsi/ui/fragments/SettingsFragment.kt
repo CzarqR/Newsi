@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.myniprojects.livesh.putBoolean
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.FragmentSettingsBinding
 import com.myniprojects.newsi.utils.Constants.DARK_MODE_SH
@@ -11,6 +12,7 @@ import com.myniprojects.newsi.utils.Constants.HOT_NEWS_SH
 import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings)
@@ -37,7 +39,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings)
 
             switchDarkTheme.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.sharedPreferences.edit()
-                    .putBoolean(DARK_MODE_SH.first, isChecked)
+                    .putBoolean(DARK_MODE_SH, isChecked)
                     .apply()
             }
 
@@ -48,7 +50,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings)
 
             openInExternalBrowser.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.sharedPreferences.edit()
-                    .putBoolean(OPEN_IN_EXTERNAL_SH.first, isChecked)
+                    .putBoolean(OPEN_IN_EXTERNAL_SH, isChecked)
                     .apply()
             }
 
@@ -60,10 +62,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings)
 
             showHotNews.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.sharedPreferences.edit()
-                    .putBoolean(HOT_NEWS_SH.first, isChecked)
+                    .putBoolean(HOT_NEWS_SH, isChecked)
                     .apply()
             }
-
         }
     }
 }
