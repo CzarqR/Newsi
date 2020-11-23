@@ -9,6 +9,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.RemoteInput
+import androidx.core.view.iterator
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -17,11 +19,16 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.chip.Chip
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.ActivityMainBinding
+import com.myniprojects.newsi.utils.Constants
 import com.myniprojects.newsi.utils.Constants.HOT_NEWS
 import com.myniprojects.newsi.utils.Constants.SEARCH_INPUT_KEY
+import com.myniprojects.newsi.utils.createFreshNewsNotification
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -47,6 +54,8 @@ class MainActivity : AppCompatActivity()
 
         initNotification()
         initChips()
+
+        collectSearchQuery()
     }
 
     private fun initNotification()
@@ -138,21 +147,54 @@ class MainActivity : AppCompatActivity()
 
         remoteInput?.getCharSequence(SEARCH_INPUT_KEY)?.toString()?.let {
             Timber.d("Received search keyword $it")
-            viewModel.submittedKey = it
+            viewModel.submitQuery(it)
             return
         }
 
         // hot news
         getIntent()?.getStringExtra(HOT_NEWS.first)?.let {
             Timber.d("Received intent hot news search keyword $it")
-            viewModel.submittedKey = it
+            viewModel.submitQuery(it)
             return
         }
     }
 
+    private fun collectSearchQuery()
+    {
+        lifecycleScope.launch {
+            viewModel.queryFlow.collectLatest {
+
+                if (it == null)
+                {
+                    binding.chipsQuickSearch.clearCheck()
+                }
+                else
+                {
+                    val submittedQuery = it.toLowerCase(Locale.getDefault())
+
+                    for (v: View in binding.chipsQuickSearch.iterator())
+                    {
+                        val c = v as Chip
+                        val chipText = c.text.toString().toLowerCase(Locale.getDefault())
+
+                        Timber.d(chipText)
+
+
+                        if (chipText == submittedQuery)
+                        {
+                            c.isChecked = true
+                            return@collectLatest
+                        }
+                    }
+                    binding.chipsQuickSearch.clearCheck()
+                }
+            }
+        }
+    }
+
+
     private fun initChips()
     {
-
         viewModel.showHotNews.observe(this, {
             Timber.d("Observed state $it")
             if (it)
@@ -168,18 +210,44 @@ class MainActivity : AppCompatActivity()
                         val chip = inflater.inflate(R.layout.hot_news_chip, this, false) as Chip
                         chip.text = keyword
 
-
-                        chip.setOnClickListener {
-                            Timber.d("Click $keyword")
-                            viewModel.submittedKey = keyword
+                        chip.setOnCheckedChangeListener { _, isChecked ->
+                            Timber.d("Click $keyword, $isChecked")
+                            if (isChecked)
+                            {
+                                viewModel.submitQuery(keyword)
+                            }
+                            else //check if unselected
+                            {
+                                if (binding.chipsQuickSearch.checkedChipIds.size == 0)
+                                {
+                                    viewModel.submitQuery(null)
+                                }
+                            }
                         }
-
                         chip
                     }
 
-                    for (chip in children)
+
+                    val q = viewModel.queryFlow.value
+
+                    if (q == null)
                     {
-                        addView(chip)
+                        for (chip in children)
+                        {
+                            addView(chip)
+                        }
+                    }
+                    else
+                    {
+                        val ql = q.toLowerCase(Locale.getDefault())
+                        for (chip in children)
+                        {
+                            if (chip.text.toString().toLowerCase(Locale.ROOT) == ql)
+                            {
+                                chip.isChecked = true
+                            }
+                            addView(chip)
+                        }
                     }
                 }
             }

@@ -20,5 +20,8 @@
     //overflow menu
     <color name="overflow_menu">#FF000000</color>
 
+    // chip colors
+    <color name="chip_color">@color/colorSecondaryVariant</color>
+
 
 </resources>

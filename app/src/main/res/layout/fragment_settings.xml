@@ -13,7 +13,6 @@
         >
 
         <ImageView
-            android:padding="4dp"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -21,6 +20,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/dark_theme"
+            android:padding="4dp"
             app:srcCompat="@drawable/ic_outline_brightness_6_24"
             app:tint="@color/colorSecondaryVariant"
             />
@@ -48,6 +48,7 @@
                 style="@style/Divider"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
+                android:background="@color/colorSecondary"
                 />
 
 
@@ -62,7 +63,6 @@
         >
 
         <ImageView
-            android:padding="4dp"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -70,6 +70,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/dark_theme"
+            android:padding="4dp"
             app:srcCompat="@drawable/ic_baseline_open_in_browser_24"
             app:tint="@color/colorSecondaryVariant"
             />
@@ -97,6 +98,7 @@
                 style="@style/Divider"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
+                android:background="@color/colorSecondary"
                 />
 
 
@@ -111,7 +113,6 @@
         >
 
         <ImageView
-            android:padding="4dp"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -119,6 +120,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@string/dark_theme"
+            android:padding="4dp"
             app:srcCompat="@drawable/ic_outline_call_to_action_24"
             app:tint="@color/colorSecondaryVariant"
             />
@@ -146,6 +148,7 @@
                 style="@style/Divider"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
+                android:background="@color/colorSecondary"
                 />
 
 

@@ -11,7 +11,6 @@ import com.myniprojects.newsi.utils.Constants.HOT_NEWS_SH
 import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings)

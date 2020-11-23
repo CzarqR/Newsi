@@ -12,7 +12,7 @@ object Constants
     const val HEADER_HOST = "x-rapidapi-host: webit-news-search.p.rapidapi.com"
     const val HEADER_KEY = "x-rapidapi-key: 3afd6a0154mshce0ba6c65a48cb8p18fdf5jsn9a31d07e7509"
     const val NEWS_STARTING_PAGE_INDEX = 0
-    const val NETWORK_PAGE_SIZE = 50
+    const val NETWORK_PAGE_SIZE = 30
     const val INITIAL_LOAD_SIZE = 2
 
     // date-time format
@@ -67,7 +67,7 @@ object Constants
     // WorkManager
     const val REFRESH_WORK_NAME = "REFRESH_DATA_WORKER"
     const val LOAD_AFTER_MINIMUM = 1000 * 60 * 60 * 3 // load fresh news only after 3h after last app run
-    const val LOAD_DEFAULT_TIME = 1L // run WorkManager after 12 hours (1 to test)
+    const val LOAD_DEFAULT_TIME = 12L // run WorkManager after 12 hours
 
 
     // Notifications

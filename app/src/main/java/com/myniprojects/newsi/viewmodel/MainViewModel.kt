@@ -20,8 +20,8 @@ import com.myniprojects.newsi.utils.Constants.HOT_NEWS_SH
 import com.myniprojects.newsi.utils.Constants.OPEN_IN_EXTERNAL_SH
 import com.myniprojects.newsi.utils.isDateTheSame
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -34,18 +34,11 @@ class MainViewModel @ViewModelInject constructor(
     lateinit var openedNews: News
         private set
 
-    private var currentSearchResult: Flow<PagingData<NewsRecyclerModel>>? = null
-
-
     val likedNews = newsRepository.getLikedNews().mapToRecyclerModel().cachedIn(viewModelScope)
     val countLikeNews = appDatabase.domainNewsDao.countLiked()
 
     val countHomeNews = appDatabase.cacheNewsDao.countLiked()
 
-    var currentKey: String? = null
-        private set
-
-    var submittedKey: String? = null
 
     init
     {
@@ -54,20 +47,35 @@ class MainViewModel @ViewModelInject constructor(
             .apply()
     }
 
-    fun searchNews(forceNewLoad: Boolean = false): Flow<PagingData<NewsRecyclerModel>>
+
+    private val _queryFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+    val queryFlow: StateFlow<String?>
+        get() = _queryFlow
+
+    fun submitQuery(query: String?)
     {
-        Timber.d("Search news with key:$submittedKey")
-        val lastResult = currentSearchResult
-
-        if (!forceNewLoad && currentKey == submittedKey && lastResult != null)
+        Timber.d("Submit new search $query")
+        _queryFlow.value = when
         {
-            return lastResult
+            query.isNullOrEmpty() -> null
+            query.trim()
+                .isNotBlank() -> query
+            else -> null
         }
+    }
 
-        currentKey = submittedKey
+    @ExperimentalCoroutinesApi
+    val homeNewsData = _queryFlow.flatMapLatest {
+        searchNews(it)
+    }
 
-        val newResult: Flow<PagingData<NewsRecyclerModel>> = newsRepository.getSearchResultStream(
-            submittedKey
+    private fun searchNews(
+        query: String?
+    ): Flow<PagingData<NewsRecyclerModel>>
+    {
+
+        return newsRepository.getSearchResultStream(
+            query
         )
             .map { pagingData ->
                 pagingData.filter { news ->
@@ -88,10 +96,6 @@ class MainViewModel @ViewModelInject constructor(
             .map { pagingData -> pagingData.map { NewsRecyclerModel.NewsItem(it) } }
             .insertDateSeparators()
             .cachedIn(viewModelScope)
-
-        PagingData
-        currentSearchResult = newResult
-        return newResult
     }
 
     val darkMode = sharedPreferences.liveData(DARK_MODE_SH)

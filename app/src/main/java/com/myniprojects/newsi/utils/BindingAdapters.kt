@@ -19,7 +19,6 @@ import com.google.android.material.button.MaterialButton
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.utils.Constants.FORMATTER_LOCAL
 import com.myniprojects.newsi.utils.Constants.FORMATTER_NETWORK
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -34,10 +33,6 @@ fun ImageView.bindImage(imgUrl: String?)
     else
     {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
-
-//        val pv = (context.resources.displayMetrics.widthPixels * 3.6 / 8.0).toInt()
-//        this@bindImage.setPadding(pv, 0, pv, 0)
-
 
         Glide.with(context)
             .load(imgUri)

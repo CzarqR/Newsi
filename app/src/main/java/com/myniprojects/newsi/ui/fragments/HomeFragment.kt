@@ -3,13 +3,13 @@ package com.myniprojects.newsi.ui.fragments
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.google.android.material.chip.Chip
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.adapters.newsrecycler.NewsClickListener
 import com.myniprojects.newsi.adapters.newsrecycler.NewsLoadStateAdapter
@@ -21,13 +21,11 @@ import com.myniprojects.newsi.utils.openWeb
 import com.myniprojects.newsi.utils.showSnackbarWithCancellation
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home)
 {
@@ -37,19 +35,12 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     private lateinit var newsRecyclerAdapter: NewsRecyclerAdapter
 
 
+    private var menuItemSearch: MenuItem? = null
+    private var searchView: SearchView? = null
+
     private var searchJob: Job? = null
 
-    // passing null will get trending news, giving any not empty string will search news by keyword
-    private fun search(forceNewLoad: Boolean = false)
-    {
-        // Make sure we cancel the previous job before creating a new one
-        searchJob?.cancel()
-        searchJob = lifecycleScope.launch {
-            viewModel.searchNews(forceNewLoad).collectLatest {
-                newsRecyclerAdapter.submitData(it)
-            }
-        }
-    }
+
 //      Not used, it swipe recView all the time to top
 //    private fun initSearch()
 //    {
@@ -73,6 +64,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     {
         viewModel.scrollPosHome.observe(viewLifecycleOwner, {
             it?.let {
+                Timber.d("Restore pos $it")
                 binding.recViewNews.layoutManager?.onRestoreInstanceState(it)
             }
         })
@@ -185,13 +177,48 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         binding = FragmentHomeBinding.bind(view)
 
         initAdapter()
-        search()
 
-        setupObservers()
+        collectNews()
 
         binding.butRetry.setOnClickListener { newsRecyclerAdapter.retry() }
+
+        setupObservers()
     }
 
+
+    private fun collectNews()
+    {
+        searchJob?.cancel()
+        searchJob = lifecycleScope.launch {
+            viewModel.homeNewsData.collectLatest {
+                newsRecyclerAdapter.submitData(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.queryFlow.collectLatest {
+
+                menuItemSearch?.let { mi ->
+                    searchView?.let { sv ->
+
+                        Timber.d("$it")
+
+                        if (it != null)
+                        {
+                            mi.expandActionView()
+                            sv.setQuery(it, false)
+                            sv.clearFocus()
+                        }
+                        else
+                        {
+                            requireActivity().findViewById<Toolbar>(R.id.toolbar)
+                                .collapseActionView()
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
     {
@@ -201,26 +228,24 @@ class HomeFragment : Fragment(R.layout.fragment_home)
 
         // region SearchView setup
 
-        val menuItemSearch = menu.findItem(R.id.itemSearch)
-        val searchView = menuItemSearch.actionView as SearchView
+        menuItemSearch = menu.findItem(R.id.itemSearch)
+        searchView = menuItemSearch!!.actionView as SearchView
 
         // change searchText if it has been set
-        viewModel.currentKey?.let {
-            menuItemSearch.expandActionView()
-            searchView.setQuery(it, false)
-            searchView.clearFocus()
+        viewModel.queryFlow.value?.let {
+            menuItemSearch!!.expandActionView()
+            searchView!!.setQuery(it, false)
+            searchView!!.clearFocus()
         }
 
-
-        searchView.setOnQueryTextListener(
+        searchView!!.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener
             {
                 override fun onQueryTextSubmit(textInput: String?): Boolean
                 {
                     Timber.d("onQueryTextSubmit $textInput")
                     hideKeyboard()
-                    viewModel.submittedKey = textInput
-                    search()
+                    viewModel.submitQuery(textInput)
                     return true
                 }
 
@@ -232,7 +257,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             }
         )
 
-        menuItemSearch.setOnActionExpandListener(
+        menuItemSearch!!.setOnActionExpandListener(
             object : MenuItem.OnActionExpandListener
             {
                 override fun onMenuItemActionExpand(p0: MenuItem?): Boolean
@@ -244,8 +269,7 @@ class HomeFragment : Fragment(R.layout.fragment_home)
                 override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean
                 {
                     Timber.d("onMenuItemActionCollapse")
-                    viewModel.submittedKey = null
-                    search()
+                    viewModel.submitQuery(null)
                     return true
                 }
             }
@@ -262,8 +286,9 @@ class HomeFragment : Fragment(R.layout.fragment_home)
             R.id.itemRefresh ->
             {
                 Timber.d("Refresh")
-                search(true)
+
                 binding.recViewNews.smoothScrollToPosition(0)
+                newsRecyclerAdapter.refresh()
                 true
             }
             else ->
@@ -294,7 +319,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
     }
 
 
-
     private fun likeNews(news: News)
     {
         Timber.d("Id liked: ${news.url}")
@@ -307,8 +331,6 @@ class HomeFragment : Fragment(R.layout.fragment_home)
         // save recyclerView state
         viewModel.saveHomeScrollPosition(binding.recViewNews.layoutManager?.onSaveInstanceState())
     }
-
-
 }
 
 

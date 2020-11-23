@@ -30,6 +30,7 @@
     <string name="hot_news_notification">Covid</string>
     <string name="news_not_found">News not found</string>
     <string name="show_hot_news">Show hot news bar</string>
+    <string name="refresh">Refresh</string>
 
     <string-array name="hot_news_keywords">
         <item>Covid</item>
