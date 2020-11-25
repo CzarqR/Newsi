@@ -19,10 +19,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.chip.Chip
 import com.myniprojects.newsi.R
 import com.myniprojects.newsi.databinding.ActivityMainBinding
-import com.myniprojects.newsi.utils.Constants
 import com.myniprojects.newsi.utils.Constants.HOT_NEWS
 import com.myniprojects.newsi.utils.Constants.SEARCH_INPUT_KEY
-import com.myniprojects.newsi.utils.createFreshNewsNotification
 import com.myniprojects.newsi.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -224,6 +222,8 @@ class MainActivity : AppCompatActivity()
 
 
                     val q = viewModel.queryFlow.value
+
+                    removeAllViews()
 
                     if (q == null)
                     {

@@ -31,6 +31,8 @@
     <string name="show_hot_news">Show hot news bar</string>
     <string name="refresh">Refresh</string>
     <string name="cannot_open_web">Web page cannot be opened. Probably Your phone does not have installed browser</string>
+    <string name="info">Info</string>
+    <string name="info_dialog_desc">News displayed in this app comes from rapidapi.com/webit/api/webit-news-search . News are not filter by our app so we are not responsible for content in this application. \n\n App icon comes from flaticon.com</string>
 
     <string-array name="hot_news_keywords">
         <item>Covid</item>
@@ -46,6 +48,10 @@
         <item>2020</item>
         <item>Pope Francis</item>
         <item>Twitter</item>
+        <item>PS5</item>
+        <item>XBox</item>
+        <item>Apple</item>
+        <item>Samsung</item>
     </string-array>
 
 </resources>

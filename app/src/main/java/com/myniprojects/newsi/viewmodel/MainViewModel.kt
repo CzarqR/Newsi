@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.myniprojects.livesh.liveData
 import com.myniprojects.livesh.getBoolean
+import com.myniprojects.livesh.liveData
 import com.myniprojects.livesh.putLong
 import com.myniprojects.newsi.adapters.newsrecycler.NewsRecyclerModel
 import com.myniprojects.newsi.db.AppDatabase
@@ -61,7 +61,7 @@ class MainViewModel @ViewModelInject constructor(
         {
             query.isNullOrEmpty() -> null
             query.trim()
-                .isNotBlank() -> query
+                .isNotBlank() -> query.trim()
             else -> null
         }
     }
