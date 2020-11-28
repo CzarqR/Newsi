@@ -37,8 +37,9 @@ fun Context.createFreshNewsNotification(): Notification
         getString(HOT_NEWS.second)
     )
     val openHotPendingIntent: PendingIntent = PendingIntent.getActivity(
-        this, 0, openHotIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        this, 1, openHotIntent, PendingIntent.FLAG_UPDATE_CURRENT
     )
+
 
     val openHotAction: NotificationCompat.Action = NotificationCompat.Action.Builder(
         0,

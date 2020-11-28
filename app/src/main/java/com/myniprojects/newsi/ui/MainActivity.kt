@@ -155,6 +155,8 @@ class MainActivity : AppCompatActivity()
             viewModel.submitQuery(it)
             return
         }
+
+        Timber.d("No input")
     }
 
     private fun collectSearchQuery()
@@ -175,13 +177,8 @@ class MainActivity : AppCompatActivity()
                         val c = v as Chip
                         val chipText = c.text.toString().toLowerCase(Locale.getDefault())
 
-                        if (chipText == submittedQuery)
-                        {
-                            c.isChecked = true
-                            return@collectLatest
-                        }
+                        c.isChecked = chipText == submittedQuery
                     }
-                    binding.chipsQuickSearch.clearCheck()
                 }
             }
         }
