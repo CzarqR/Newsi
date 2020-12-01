@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity()
         viewModel.showHotNews.observe(this, {
             if (it)
             {
-                val hotNews: Array<String> = resources.getStringArray(R.array.hot_news_keywords)
+                val hotNews: Array<String> = resources.getStringArray(R.array.hot_news_keywords) // hot news are hardcoded, API doesn't provide it
 
                 with(binding.chipsQuickSearch)
                 {

@@ -82,6 +82,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_bottom_navigation"
+        app:itemIconTint="@color/bottom_nav_selection"
+        app:itemTextColor="@color/bottom_nav_selection"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

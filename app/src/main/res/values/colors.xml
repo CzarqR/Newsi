@@ -24,4 +24,8 @@
     <color name="chip_color">@color/colorSecondaryVariant</color>
 
 
+    //bottom nav
+    <color name="select">@color/colorPrimary</color>
+    <color name="unSelect">#99000000</color>
+
 </resources>
